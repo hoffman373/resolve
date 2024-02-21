@@ -1,0 +1,33 @@
+realization Iterative (function PRECEEDS (restores x: Item,
+                                          restores y: Item) : control
+                         ensures
+                           PRECEEDS = IS_PRECEDING({x}, {y}))
+  implements Split for SetTemplate
+
+  procedure Split (updates s: Set,
+                   restores x: Item,
+                   replaces t: Set)
+    variable tempSet: Set
+    Clear(t)
+    loop
+      maintains x = #x and
+                IS_PRECEDING({x}, t) and
+                IS_PRECEDING(tempSet, {x}) and
+                (s union t union tempSet = #s union #t union #tempSet) and
+                (s intersection t = empty_set) and
+                s intersection tempSet = empty_set and
+                tempSet intersection t = empty_set
+      decreases |s|
+    while not IsEmpty(s) do
+      variable y: Item
+      RemoveAny(s, y)
+      if PRECEEDS(x, y) then
+        Add(t, y)
+      else
+        Add(tempSet, y)
+      end if
+    end loop
+    tempSet :=: s
+  end Split
+
+end Iterative

@@ -1,0 +1,45 @@
+contract CircularArrayAsStringTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype ARRAY_MODEL is (lb: integer,
+                               ub: integer,
+                               s: string of Item)
+    exemplar a
+    constraint a.lb <= a.ub + 1 and
+               |a.s| = a.ub - a.lb + 1
+
+  type Array is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_string)
+
+  procedure SetBounds(updates a: Array,
+                      restores lower: Integer,
+                      restores upper: Integer)
+    requires
+      lower <= upper + 1
+    ensures
+      a.lb = lower and a.ub = upper
+
+  procedure SwapItem(updates a: Array,
+                     restores i: Integer,
+                     updates x: Item)
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      |a.s| = |#a.s| and
+      substring(a.s, 0, (i - a.lb) mod |a.s|) =
+      substring(#a.s, 0, (i - a.lb) mod |a.s|) and
+      substring(a.s, (i - a.lb) mod |a.s|, 1 + (i - a.lb) mod |a.s|) = <#x> and
+      substring(a.s, 1 + (i - a.lb) mod |a.s|, |a.s|) =
+      substring(#a.s, 1 + (i - a.lb) mod |a.s|, |a.s|) and
+      substring(#a.s, (i - a.lb) mod |a.s|, 1 + (i - a.lb) mod |a.s|) = <x>
+
+  function LowerBound (restores a: Array) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: Array) : Integer
+    ensures
+      UpperBound = a.ub
+
+end CircularArrayAsStringTemplate

@@ -1,0 +1,9 @@
+contract UnboundedAdd
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Add(updates n: UnboundedNaturalBase,
+                restores m: UnboundedNaturalBase)
+    ensures
+      n = #n + m
+
+end UnboundedAdd

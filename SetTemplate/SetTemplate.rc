@@ -1,0 +1,47 @@
+contract SetTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype SET_MODEL is finite set of Item
+
+  type Set is modeled by SET_MODEL
+    exemplar s
+    initialization ensures s = empty_set
+
+  procedure Add(updates s: Set,
+                clears x: Item)
+    requires
+      x is not in s
+    ensures
+      s = #s union {#x}
+
+  procedure Remove(updates s: Set,
+                   restores x: Item,
+                   replaces xCopy: Item)
+    requires
+      x is in s
+    ensures
+      s = #s \ {x} and
+      xCopy = x
+
+  procedure RemoveAny(updates s: Set,
+                      replaces x: Item)
+    requires
+      s /= empty_set
+    ensures
+      x is in #s and
+      s = #s \ {x}
+
+  function Contains (restores s: Set,
+                     restores x: Item) : control
+    ensures
+      Contains = (x is in s)
+
+  function IsEmpty (restores s: Set) : control
+    ensures
+      IsEmpty = (s = empty_set)
+
+  function Size (restores s: Set) : Integer
+    ensures
+      Size = |s|
+
+end SetTemplate

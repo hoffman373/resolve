@@ -1,0 +1,84 @@
+realization MergeSort (function AreInOrder (restores i: Item,
+                                            restores j: Item) : control
+                         ensures
+                           AreInOrder = ARE_IN_ORDER(i, j))
+  implements Sort for QueueTemplate
+
+  uses Concatenate for QueueTemplate
+
+  local procedure Split(updates q1: Queue,
+                        replaces q2: Queue)
+    ensures IS_PERMUTATION(q1 * q2, #q1) and
+            |q2| <= |q1| and
+            |q1| <= |q2| + 1
+    variable tmp: Queue
+    Clear(q2)
+    tmp :=: q1
+    loop
+      maintains IS_PERMUTATION(tmp * q1 * q2, #tmp * #q1 * #q2) and
+                |q2| <= |q1| and
+                |q1| <= |q2| + 1 and
+                (tmp /= empty_string implies |q1| = |q2|)
+      decreases |tmp|
+    while not IsEmpty(tmp) do
+      variable x: Item
+      Dequeue(tmp, x)
+      Enqueue(q1, x)
+      if not IsEmpty(tmp) then
+        Dequeue(tmp, x)
+        Enqueue(q2, x)
+      end if
+    end loop
+  end Split
+
+  local procedure Merge(updates q1: Queue,
+                        clears q2: Queue)
+    requires |q1| > 0 and
+             |q2| > 0 and
+             IS_NON_DECREASING(q1) and
+             IS_NON_DECREASING(q2)
+    ensures IS_PERMUTATION(q1, #q1 * #q2) and
+            IS_NON_DECREASING(q1)
+    variable tmp: Queue
+    variable q2Item: Item
+    Dequeue(q2, q2Item)
+    loop
+      maintains IS_PERMUTATION(tmp * q1 * q2 * <q2Item>,
+                #tmp * #q1 * #q2 * <#q2Item>) and
+                IS_NON_DECREASING(tmp * q1) and
+                IS_NON_DECREASING(tmp * <q2Item> * q2)
+      decreases |q1 * q2|
+    while not IsEmpty(q1) do
+      variable q1Item: Item
+      Dequeue(q1, q1Item)
+      if not AreInOrder(q1Item, q2Item) then
+        q1Item :=: q2Item
+        q1 :=: q2
+      end if
+      confirm ARE_IN_ORDER(q1Item, q2Item)
+      confirm IS_NON_DECREASING(<q1Item> * q1)
+      confirm IS_NON_DECREASING(<q2Item> * q2)
+      confirm IS_NON_DECREASING(<q1Item> * q2)
+      confirm IS_NON_DECREASING(tmp * <q1Item>)
+      Enqueue(tmp, q1Item)
+    end loop
+    Enqueue(tmp, q2Item)
+    Concatenate(tmp, q2)
+    q1 :=: tmp
+  end Merge
+
+  procedure Sort (updates q: Queue)
+    decreases |q|
+    variable qLength, one: Integer
+    Increment(one)
+    qLength := Length(q)
+    if IsGreater(qLength, one) then
+      variable qSplit: Queue
+      Split(q, qSplit)
+      Sort(q)
+      Sort(qSplit)
+      Merge(q, qSplit)
+    end if
+  end Sort
+
+end MergeSort

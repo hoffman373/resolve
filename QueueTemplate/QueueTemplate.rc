@@ -1,0 +1,30 @@
+contract QueueTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype QUEUE_MODEL is string of Item
+
+  type Queue is modeled by QUEUE_MODEL
+    exemplar q
+    initialization ensures q = empty_string
+
+  procedure Enqueue(updates q: Queue,
+                    clears x: Item)
+    ensures
+      q = #q * <#x>
+
+  procedure Dequeue(updates q: Queue,
+                    replaces x: Item)
+    requires
+      q /= empty_string
+    ensures
+      #q = <x> * q
+
+  function Length (restores q: Queue) : Integer
+    ensures
+      Length = |q|
+
+  function IsEmpty (restores q: Queue) : control
+    ensures
+      IsEmpty = (q = empty_string)
+
+end QueueTemplate

@@ -1,0 +1,18 @@
+realization Iterative
+  implements ReadQueue for InputStreamTemplate
+
+  procedure ReadQueue (updates ins: InputStream,
+                       replaces q: Queue)
+    Clear(q)
+    loop
+      maintains q * ins.items = #q * #ins.items and
+                ins.is_open
+      decreases |ins.items|
+    while not Is_Empty(ins) do
+      variable x: Item
+      Get(ins, x)
+      Enqueue(q, x)
+    end loop
+  end ReadQueue
+
+end Iterative

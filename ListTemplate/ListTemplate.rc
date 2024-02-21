@@ -1,0 +1,50 @@
+contract ListTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype LIST_MODEL is (left: string of Item,
+                              right: string of Item)
+
+  type List is modeled by LIST_MODEL
+    exemplar l
+    initialization ensures l.left = empty_string and l.right = empty_string
+
+  procedure Insert(updates s: List,
+                   clears x: Item)
+    ensures
+      s.left = #s.left and
+      s.right = <#x> * #s.right
+
+  procedure Remove(updates s: List,
+                   replaces x: Item)
+    requires
+      s.right /= empty_string
+    ensures
+      s.left = #s.left and
+      #s.right = <x> * s.right
+
+  procedure Advance(updates s: List)
+    requires
+      s.right /= empty_string
+    ensures
+      s.left * s.right = #s.left * #s.right and
+      |s.left| = |#s.left| + 1
+
+  procedure Reset(updates s: List)
+    ensures
+      |s.left| = 0 and
+      s.right = #s.left * #s.right
+
+  procedure AdvanceToEnd(updates s: List)
+    ensures
+      |s.right| = 0 and
+      s.left = #s.left * #s.right
+
+  function LeftLength (restores s: List) : Integer
+    ensures
+      LeftLength = |s.left|
+
+  function RightLength (restores s: List) : Integer
+    ensures
+      RightLength = |s.right|
+
+end ListTemplate

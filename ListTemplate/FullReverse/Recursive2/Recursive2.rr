@@ -1,0 +1,27 @@
+realization Recursive2
+  implements FullReverse for ListTemplate
+
+  procedure Reverse (updates s: List)
+    decreases (|s.right| + |s.left|)
+    variable len, zero: Integer
+    len := RightLength(s)
+    if IsGreater(len, zero) then
+      variable x: Item
+      Remove(s, x)
+      Reverse(s)
+      Insert(s, x)
+      Advance(s)
+    else
+      len := LeftLength(s)
+      if IsGreater(len, zero) then
+        variable x: Item
+        Reset(s)
+        Remove(s, x)
+        Reverse(s)
+        Insert(s, x)
+        Reset(s)
+      end if
+    end if
+  end Reverse
+
+end Recursive2

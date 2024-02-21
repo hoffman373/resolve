@@ -1,0 +1,35 @@
+contract OutputStreamTemplate (type Item)
+  math subtype OUTPUT_STREAM_MODEL is (items: string of Item,
+                                       is_open: boolean)
+
+  type OutputStream is modeled by OUTPUT_STREAM_MODEL
+    exemplar s
+    initialization ensures not s.is_open and
+                           s.items = empty_string
+
+  procedure Open(updates s: OutputStream)
+    requires
+      not s.is_open
+    ensures
+      s.is_open and
+      s.items = empty_string
+
+  procedure Close(updates s: OutputStream)
+    requires
+      s.is_open
+    ensures
+      not s.is_open
+
+  function Is_Open (restores s: OutputStream) : control
+    ensures
+      Is_Open = s.is_open
+
+  procedure Put(updates s: OutputStream,
+                clears x: Item)
+    requires
+      s.is_open
+    ensures
+      s.is_open and
+      s.items = #s.items * <#x>
+
+end OutputStreamTemplate

@@ -1,0 +1,12 @@
+realization Obvious
+  implements Double for UnboundedIntegerFacility
+
+  uses Add for UnboundedIntegerFacility
+
+  procedure Double (updates i: Integer)
+    variable i2: Integer
+    i2 := Replica(i)
+    Add(i, i2)
+  end Double
+
+end Obvious

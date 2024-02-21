@@ -1,0 +1,21 @@
+realization ViaSubtraction
+  implements OthersSize for PartitionedSetOfIntegersFacility
+
+  uses Subtract for UnboundedIntegerFacility
+
+  function OthersSize (restores p: PartitionedSetOfIntegers) : Integer
+    variable lo: Integer
+    variable hi: Integer
+    variable zero: Integer
+    variable interestingSize: Integer
+    GetDomain(p, lo, hi)
+    OthersSize := Replica(hi)
+    Subtract(OthersSize, lo)
+    Increment(OthersSize)
+    if (IsGreater(OthersSize, zero)) then
+      interestingSize := InterestingSize(p)
+      Subtract(OthersSize, interestingSize)
+    end if
+  end OthersSize
+
+end ViaSubtraction

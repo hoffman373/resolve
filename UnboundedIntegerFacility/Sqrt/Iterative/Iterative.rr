@@ -1,0 +1,29 @@
+realization Iterative
+  implements Sqrt for UnboundedIntegerFacility
+
+  uses Add for UnboundedIntegerFacility
+  uses Subtract for UnboundedIntegerFacility
+  uses Multiply for UnboundedIntegerFacility
+  uses Divide for UnboundedIntegerFacility
+  uses Square for UnboundedIntegerFacility
+
+  procedure Sqrt (updates i: Integer)
+    variable x, xsqrd: Integer
+    Increment(x)
+    Increment(xsqrd)
+    loop
+      maintains xsqrd = x * x and
+                i = #i and
+                x + x > 1 and
+                (x - 1) * (x - 1) <= i
+      decreases i - (x - 1) * (x - 1)
+    while not IsGreater(xsqrd, i) do
+      Increment(x)
+      xsqrd := Replica(x)
+      Square(xsqrd)
+    end loop
+    Decrement(x)
+    i :=: x
+  end Sqrt
+
+end Iterative

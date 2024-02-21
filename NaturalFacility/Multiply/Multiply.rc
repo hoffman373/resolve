@@ -1,0 +1,11 @@
+contract Multiply
+  enhances NaturalFacility
+
+  procedure Multiply(updates n: Natural,
+                     restores m: Natural)
+    requires
+      n * m <= MAX
+    ensures
+      n = #n * m
+
+end Multiply

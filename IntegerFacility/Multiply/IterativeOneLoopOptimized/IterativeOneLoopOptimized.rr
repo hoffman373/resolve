@@ -1,0 +1,32 @@
+realization IterativeOneLoopOptimized
+  implements Multiply for IntegerFacility
+
+  uses Add for IntegerFacility
+  uses Negate for IntegerFacility
+
+  procedure Multiply (updates i: Integer,
+                      restores j: Integer)
+    variable jSign, iIncr, k, zero, prod: Integer
+    Increment(jSign)
+    iIncr := Replica(i)
+    if IsGreater(zero, j) then // and not AreEqual (i, zero) then
+      Negate(jSign)
+      Negate(iIncr)
+    end if
+    // confirm if ( i /= 0 and j /= 0 ) then iIncr = jSign * i
+    loop
+      maintains jSign = #jSign and iIncr = #iIncr and i = #i and j = #j and
+                prod = i * k and
+                (if 0 < j then
+                   (0 <= k and k <= j)
+                 else
+                   (j <= k and k <= 0))
+      decreases |j - k|
+    while not AreEqual(k, j) do
+      Add(k, jSign)
+      Add(prod, iIncr)
+    end loop
+    i :=: prod
+  end Multiply
+
+end IterativeOneLoopOptimized

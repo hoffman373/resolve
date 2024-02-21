@@ -1,0 +1,9 @@
+contract Sum
+  enhances UnboundedIntegerFacility
+
+  function Sum (restores i: Integer,
+                restores j: Integer) : Integer
+    ensures
+      Sum = i + j
+
+end Sum

@@ -1,0 +1,49 @@
+contract RemoveMin (definition ARE_IN_ORDER (x: Item,
+                                             y: Item)
+                      : boolean
+                      satisfies restriction for all z: Item
+                                              ((ARE_IN_ORDER(x, y) or ARE_IN_ORDER(y, x)) and
+                                              (if (ARE_IN_ORDER(x, y) and ARE_IN_ORDER(y, z)) then
+                                                 ARE_IN_ORDER(x, z))))
+  enhances QueueTemplate
+
+  definition OccursCount (s: string of Item,
+                          i: Item)
+    : integer
+    satisfies if s = empty_string then
+                OccursCount(s, i) = 0
+              else
+                there exists x: Item,
+                             r: string of Item
+                  ((s = <x> * r) and
+                  (if x = i then
+                     OccursCount(s, i) = OccursCount(r, i) + 1
+                   else
+                     OccursCount(s, i) = OccursCount(r, i)))
+
+  definition IsPermutation (s1: string of Item,
+                            s2: string of Item)
+    : boolean
+     is
+    for all i: Item
+      (OccursCount(s1, i) = OccursCount(s2, i))
+
+  definition IsPreceding (s1: string of Item,
+                          s2: string of Item)
+    : boolean
+     is
+    for all i,
+            j: Item
+        where (OccursCount(s1, i) > 0 and
+              OccursCount(s2, j) > 0)
+      (ARE_IN_ORDER(i, j))
+
+  procedure RemoveMin(updates q: Queue,
+                      replaces min: Item)
+    requires
+      q /= empty_string
+    ensures
+      IsPermutation(q * <min>, #q) and
+      IsPreceding(<min>, q)
+
+end RemoveMin

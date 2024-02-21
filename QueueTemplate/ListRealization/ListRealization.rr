@@ -1,0 +1,37 @@
+realization ListRealization
+  implements QueueTemplate
+
+  uses ListTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility ListFacility is ListTemplate(Item)
+
+  type representation for Queue is (itemlist: List)
+    exemplar q
+    convention q.itemlist.left = empty_string
+    correspondence function q.itemlist.right
+  end Queue
+
+  procedure Enqueue (updates q: Queue,
+                     clears x: Item)
+    AdvanceToEnd(q.itemlist)
+    Insert(q.itemlist, x)
+    Reset(q.itemlist)
+  end Enqueue
+
+  procedure Dequeue (updates q: Queue,
+                     replaces x: Item)
+    Remove(q.itemlist, x)
+  end Dequeue
+
+  function Length (restores q: Queue) : Integer
+    Length := RightLength(q.itemlist)
+  end Length
+
+  function IsEmpty (restores q: Queue) : control
+    variable len: Integer
+    len := RightLength(q.itemlist)
+    IsEmpty := not IsPositive(len)
+  end IsEmpty
+
+end ListRealization

@@ -1,0 +1,11 @@
+contract ClockMod
+  enhances IntegerFacility
+
+  procedure ClockMod(updates a: Integer,
+                     restores b: Integer)
+    requires
+      b > 0
+    ensures
+      a = #a mod b
+
+end ClockMod

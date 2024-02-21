@@ -1,0 +1,11 @@
+contract Subtract
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Subtract(updates n: UnboundedNaturalBase,
+                     restores m: UnboundedNaturalBase)
+    requires
+      n >= m
+    ensures
+      n = #n - m
+
+end Subtract

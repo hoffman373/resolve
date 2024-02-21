@@ -1,0 +1,48 @@
+contract Sort
+  enhances QueueOfIntegerFacility
+
+  definition OccursCount (s: string of integer,
+                          i: integer)
+    : integer
+    satisfies if s = empty_string then
+                OccursCount(s, i) = 0
+              else
+                there exists x: integer,
+                             r: string of integer
+                  ((s = <x> * r) and
+                  (if x = i then
+                     OccursCount(s, i) = OccursCount(r, i) + 1
+                   else
+                     OccursCount(s, i) = OccursCount(r, i)))
+
+  definition IsPermutation (s1: string of integer,
+                            s2: string of integer)
+    : boolean
+     is
+    for all i: integer
+      (OccursCount(s1, i) = OccursCount(s2, i))
+
+  definition IsPreceding (s1: string of integer,
+                          s2: string of integer)
+    : boolean
+     is
+    for all i,
+            j: integer
+        where (OccursCount(s1, i) > 0 and
+              OccursCount(s2, j) > 0)
+      (i <= j)
+
+  definition IsNonDecreasing (s: string of integer)
+    : boolean
+     is
+    for all a,
+            b: string of integer
+        where (s = a * b)
+      (IsPreceding(a, b))
+
+  procedure Sort(updates q: Queue)
+    ensures
+      IsPermutation(q, #q) and
+      IsNonDecreasing(q)
+
+end Sort

@@ -1,0 +1,10 @@
+contract Negate
+  enhances IntegerFacility
+
+  procedure Negate(updates i: Integer)
+    requires
+      MIN <= -i and -i <= MAX
+    ensures
+      i + #i = 0
+
+end Negate

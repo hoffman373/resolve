@@ -1,0 +1,9 @@
+contract ExtensionToShowRepBug
+  enhances Z2Facility
+
+  procedure SetEqual(updates n: Z2,
+                     updates m: Z2)
+    ensures
+      n = m
+
+end ExtensionToShowRepBug

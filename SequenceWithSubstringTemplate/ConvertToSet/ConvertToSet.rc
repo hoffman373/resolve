@@ -1,0 +1,11 @@
+contract ConvertToSet
+  enhances SequenceWithSubstringTemplate
+
+  uses SetTemplate
+
+  procedure ConvertToSet(clears s1: Sequence,
+                         replaces s2: Set)
+    ensures
+      s2 = elements(#s1)
+
+end ConvertToSet

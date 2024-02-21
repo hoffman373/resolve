@@ -1,0 +1,8 @@
+contract Negate
+  enhances UnboundedIntegerFacility
+
+  procedure Negate(updates i: Integer)
+    ensures
+      i + #i = 0
+
+end Negate

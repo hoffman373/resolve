@@ -1,0 +1,16 @@
+realization Recursive
+  implements Add for NaturalFacility
+
+  procedure Add (updates n: Natural,
+                 restores m: Natural)
+    decreases m
+    variable z: Natural
+    if IsGreater(m, z) then
+      Decrement(m)
+      Add(n, m)
+      Increment(n)
+      Increment(m)
+    end if
+  end Add
+
+end Recursive

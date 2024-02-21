@@ -1,0 +1,35 @@
+realization Recursive
+  implements UnboundedAdd for UnboundedNaturalBaseFacility
+
+  uses Add for NaturalFacility
+  uses Subtract for NaturalFacility
+  uses UnboundedIncrement for UnboundedNaturalBaseFacility
+  uses Replica for UnboundedNaturalBaseFacility
+
+  procedure Add (updates n: UnboundedNaturalBase,
+                 restores m: UnboundedNaturalBase)
+    decreases m
+    if IsZero(n) then
+      n := Replica(m)
+    else
+      if not IsZero(m) then
+        variable ndigit, mdigit, radix: Natural
+        radix := Radix(m)
+        DivideByRadix(n, ndigit)
+        DivideByRadix(m, mdigit)
+        confirm (mdigit + ndigit) < (mdigit + RADIX)
+        confirm (mdigit + RADIX) < (2 * RADIX)
+        Add(ndigit, mdigit)
+        if IsGreater(ndigit, radix) or AreEqual(ndigit, radix) then
+          Subtract(ndigit, radix)
+          Increment(n)
+        end if
+        confirm (0 < m) implies (m < m * RADIX)
+        Add(n, m)
+        MultiplyByRadix(n, ndigit)
+        MultiplyByRadix(m, mdigit)
+      end if
+    end if
+  end Add
+
+end Recursive

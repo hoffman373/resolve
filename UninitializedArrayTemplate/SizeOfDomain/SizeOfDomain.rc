@@ -1,0 +1,8 @@
+contract SizeOfDomain
+  enhances UninitializedArrayTemplate
+
+  function SizeOfDomain (restores a: Array) : Integer
+    ensures
+      SizeOfDomain = a.ub - a.lb + 1
+
+end SizeOfDomain

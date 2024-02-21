@@ -1,0 +1,41 @@
+realization Iterative
+  implements InvertInjection for ArrayOfUnboundedIntegerAsStringFacility
+
+  procedure InvertInjection (updates a: ArrayOfInteger)
+    variable i: Integer
+    variable ubound: Integer
+    variable temp: ArrayOfInteger
+    i := LowerBound(a)
+    ubound := UpperBound(a)
+    if not IsGreater(i, ubound) then
+      SetBounds(temp, i, ubound)
+      loop
+        maintains a.lb = #a.lb and
+                  a.ub = #a.ub and
+                  a.lb <= i and
+                  i <= a.ub + 1 and
+                  temp.lb = #temp.lb and
+                  temp.ub = #temp.ub and
+                  ubound = a.ub and
+                  for all j,
+                          y: integer
+                      where (j > i and substring(a.s, a.lb + j, a.lb + j + 1) = <y>)
+                    (y is in INTERVAL(a.lb, a.ub)) and
+                  for all j,
+                          y: integer
+                      where (a.lb <= j and j < i and substring(a.s, j, j + 1) = <y>)
+                    (substring(temp.s, y, y + 1) = <j>)
+        decreases a.ub - i
+      while not IsGreater(i, ubound) do
+        variable value: Integer
+        variable iCopy: Integer
+        iCopy := Replica(i)
+        SwapItem(a, i, value)
+        SwapItem(temp, value, iCopy)
+        Increment(i)
+      end loop
+      temp :=: a
+    end if
+  end InvertInjection
+
+end Iterative

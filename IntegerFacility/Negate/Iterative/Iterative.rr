@@ -1,0 +1,23 @@
+realization Iterative
+  implements Negate for IntegerFacility
+
+  procedure Negate (updates i: Integer)
+    variable ni, z: Integer
+    loop
+      maintains i - ni = #i - #ni and ni <= 0 and z = #z
+      decreases i
+    while IsGreater(i, z) do
+      Decrement(ni)
+      Decrement(i)
+    end loop
+    loop
+      maintains i - ni = #i - #ni and i <= 0 and z = #z
+      decreases -i
+    while IsGreater(z, i) do
+      Increment(ni)
+      Increment(i)
+    end loop
+    i :=: ni
+  end Negate
+
+end Iterative

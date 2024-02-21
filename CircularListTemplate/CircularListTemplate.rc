@@ -1,0 +1,36 @@
+contract CircularListTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype CIRCULAR_LIST_MODEL is string of Item
+
+  type CircularList is modeled by CIRCULAR_LIST_MODEL
+    exemplar l
+    initialization ensures l = empty_string
+
+  procedure Insert(updates s: CircularList,
+                   clears x: Item)
+    ensures
+      s = <#x> * #s
+
+  procedure Remove(updates s: CircularList,
+                   replaces x: Item)
+    requires
+      s /= empty_string
+    ensures
+      #s = <x> * s
+
+  procedure Advance(updates s: CircularList)
+    requires
+      s /= empty_string
+    ensures
+      s = substring(#s, 1, |#s|) * substring(#s, 0, 1)
+
+  function Length (restores s: CircularList) : Integer
+    ensures
+      Length = |s|
+
+  function IsEmpty (restores s: CircularList) : control
+    ensures
+      IsEmpty = (s = empty_string)
+
+end CircularListTemplate

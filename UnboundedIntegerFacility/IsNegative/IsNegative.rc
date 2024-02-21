@@ -1,0 +1,8 @@
+contract IsNegative
+  enhances UnboundedIntegerFacility
+
+  function IsNegative (restores i: Integer) : control
+    ensures
+      IsNegative = (i < 0)
+
+end IsNegative

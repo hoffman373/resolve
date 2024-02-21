@@ -1,0 +1,9 @@
+realization SwapRealization
+  implements Exchange for IntegerFacility
+
+  procedure Exchange (updates i: Integer,
+                      updates j: Integer)
+    i :=: j
+  end Exchange
+
+end SwapRealization

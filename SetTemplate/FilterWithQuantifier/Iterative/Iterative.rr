@@ -1,0 +1,33 @@
+realization Iterative (function keep (restores x: Item) : control
+                         ensures
+                           keep = KEEP(x))
+  implements FilterWithQuantifier for SetTemplate
+
+  procedure Filter (updates s: Set,
+                    replaces t: Set)
+    variable tempSet: Set
+    Clear(t)
+    loop
+      maintains t intersection s = empty_set and
+                tempSet intersection s = empty_set and
+                tempSet union s union t = #tempSet union #s union #t and
+                for all x: Item
+                    where (x is in tempSet)
+                  (KEEP(x)) and
+                for all x: Item
+                    where (x is in t)
+                  (not KEEP(x))
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x: Item
+      RemoveAny(s, x)
+      if keep(x) then
+        Add(tempSet, x)
+      else
+        Add(t, x)
+      end if
+    end loop
+    s :=: tempSet
+  end Filter
+
+end Iterative

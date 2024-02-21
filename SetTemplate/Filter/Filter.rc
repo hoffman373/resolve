@@ -1,0 +1,18 @@
+contract Filter (definition KEEP_SET
+                   : finite set of Item
+                   satisfies true)
+  enhances SetTemplate
+
+  procedure Filter(updates s: Set,
+                   replaces t: Set)
+    ensures
+      s = #s intersection KEEP_SET and
+      t = #s \ KEEP_SET and
+      t intersection KEEP_SET = empty_set and
+      // this and next line rewrite above
+      t is subset of #s and
+      t intersection #s = t and
+      // this and next lines rewrite above
+      t union #s = #s
+
+end Filter

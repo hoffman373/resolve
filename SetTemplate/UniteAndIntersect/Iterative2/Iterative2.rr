@@ -1,0 +1,31 @@
+realization Iterative2
+  implements UniteAndIntersect for SetTemplate
+
+  procedure UniteAndIntersect (updates s: Set,
+                               updates t: Set)
+    variable ss, ts: Integer
+    variable tmp: Set
+    ss := Size(s)
+    ts := Size(t)
+    if IsGreater(ts, ss) then
+      s :=: t
+    end if
+    loop
+      maintains s union t = #s union #t and
+                (s intersection t) union tmp =
+                (#s intersection #t) union #tmp and
+                t intersection tmp = {}
+      decreases |t|
+    while not IsEmpty(t) do
+      variable x: Item
+      RemoveAny(t, x)
+      if not Contains(s, x) then
+        Add(s, x)
+      else
+        Add(tmp, x)
+      end if
+    end loop
+    t :=: tmp
+  end UniteAndIntersect
+
+end Iterative2

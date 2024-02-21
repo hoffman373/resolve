@@ -1,0 +1,27 @@
+realization Iterative (procedure CopyTo(restores x: Item,
+                                        replaces xCopy: Item)
+                         ensures
+                           x = xCopy)
+  implements Copy for QueueTemplate
+
+  uses Concatenate for QueueTemplate
+
+  procedure Copy (restores p: Queue,
+                  replaces q: Queue)
+    variable pTmp: Queue
+    Clear(q)
+    loop
+      maintains pTmp = q and
+                pTmp * p = #pTmp * #p
+      decreases |p|
+    while not IsEmpty(p) do
+      variable x, xCopy: Item
+      Dequeue(p, x)
+      CopyTo(x, xCopy)
+      Enqueue(pTmp, x)
+      Enqueue(q, xCopy)
+    end loop
+    p :=: pTmp
+  end Copy
+
+end Iterative

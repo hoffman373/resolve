@@ -1,0 +1,22 @@
+realization Recursive
+  implements Split for SequenceTemplate
+
+  procedure Split (updates s1: Sequence,
+                   restores pos: Integer,
+                   replaces s2: Sequence)
+    decreases |s1|
+    variable lenS1: Integer
+    lenS1 := Length(s1)
+    if IsGreater(lenS1, pos) then
+      variable zero: Integer
+      variable x: Item
+      Decrement(lenS1)
+      Remove(s1, lenS1, x)
+      Split(s1, pos, s2)
+      Add(s2, zero, x)
+    else
+      Clear(s2)
+    end if
+  end Split
+
+end Recursive

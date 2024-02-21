@@ -1,0 +1,25 @@
+realization DafnyNoBaseBug
+  implements Multiply for UnboundedIntegerFacility
+
+  uses IsNegative for UnboundedIntegerFacility
+  uses Add for UnboundedIntegerFacility
+  uses Negate for UnboundedIntegerFacility
+
+  procedure Multiply (updates i: Integer,
+                      restores j: Integer)
+    decreases 2 * |i| - i
+    // variable zero: Integer
+    // if not AreEqual (i, zero) then
+    if IsNegative(i) then
+      Negate(i)
+      Multiply(i, j)
+      Negate(i)
+    else
+      Decrement(i)
+      Multiply(i, j)
+      Add(i, j)
+    end if
+    // end if
+  end Multiply
+
+end DafnyNoBaseBug

@@ -1,0 +1,69 @@
+contract ArrayAsString2Template (type Item)
+  uses UnboundedIntegerFacility
+
+  /*
+  definition SUBSTRING (
+  s: string of Item,
+  start: integer,
+  finish: integer
+  ) : string of Item
+  satisfies
+  if (start < 0) or (start > finish) or (finish > |s|)
+  then
+  SUBSTRING (s, start, finish) = empty_string
+  else
+  there exists a, b: string of Item
+  (s = a * SUBSTRING (s, start, finish) * b  and
+  |a| = start  and
+  |b| = |s| - finish)
+  */
+  definition DIFFER_ONLY_AT (s1: string of Item,
+                             s2: string of Item,
+                             d: finite set of integer)
+    : boolean
+     is
+    |s1| = |s2| and
+    for all i: integer
+        where (i is not in d)
+      (substring(s1, i, i + 1) = substring(s2, i, i + 1))
+
+  math subtype ARRAY_MODEL is (lb: integer,
+                               ub: integer,
+                               s: string of Item)
+    exemplar a
+    constraint a.lb <= a.ub + 1 and
+               |a.s| = a.ub - a.lb + 1
+
+  type Array is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_string)
+
+  procedure SetBounds(updates a: Array,
+                      restores lower: Integer,
+                      restores upper: Integer)
+    requires
+      lower <= upper + 1
+    ensures
+      a.lb = lower and a.ub = upper
+
+  procedure SwapItem(updates a: Array,
+                     restores i: Integer,
+                     updates x: Item)
+    requires
+      a.lb <= i and i <= a.ub
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      DIFFER_ONLY_AT(a.s, #a.s, {i - a.lb}) and
+      substring(a.s, i - a.lb, i + 1 - a.lb) = <#x> and
+      substring(#a.s, i - #a.lb, i + 1 - #a.lb) = <x>
+
+  function LowerBound (restores a: Array) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: Array) : Integer
+    ensures
+      UpperBound = a.ub
+
+end ArrayAsString2Template

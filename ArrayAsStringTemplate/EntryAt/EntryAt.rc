@@ -1,0 +1,12 @@
+contract EntryAt
+  enhances ArrayAsStringTemplate
+
+  procedure EntryAt(restores a: Array,
+                    restores i: Integer,
+                    replaces x: Item)
+    requires
+      a.lb <= i and i <= a.ub
+    ensures
+      <x> = substring(a.s, i - a.lb, i + 1 - a.lb)
+
+end EntryAt

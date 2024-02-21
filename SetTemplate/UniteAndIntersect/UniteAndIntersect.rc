@@ -1,0 +1,9 @@
+contract UniteAndIntersect
+  enhances SetTemplate
+
+  procedure UniteAndIntersect(updates s: Set,
+                              updates t: Set)
+    ensures
+      s = #s union #t and t = #s intersection #t
+
+end UniteAndIntersect

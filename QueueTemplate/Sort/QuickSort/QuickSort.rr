@@ -1,0 +1,53 @@
+realization QuickSort (function AreInOrder (restores i: Item,
+                                            restores j: Item) : control
+                         ensures
+                           AreInOrder = ARE_IN_ORDER(i, j))
+  implements Sort for QueueTemplate
+
+  uses Concatenate for QueueTemplate
+
+  local procedure Partition(updates qSmall: Queue,
+                            replaces qBig: Queue,
+                            restores p: Item)
+    ensures IS_PERMUTATION(qSmall * qBig, #qSmall) and
+            IS_PRECEDING(<p>, qBig) and
+            IS_PRECEDING(qSmall, <p>)
+    variable tmp: Queue
+    Clear(qBig)
+    loop
+      maintains IS_PERMUTATION(qSmall * qBig * tmp, #qSmall * #qBig * #tmp) and
+                IS_PRECEDING(<p>, qBig) and
+                IS_PRECEDING(tmp, <p>) and
+                p = #p
+      decreases |qSmall|
+    while not IsEmpty(qSmall) do
+      variable x: Item
+      Dequeue(qSmall, x)
+      if AreInOrder(x, p) then
+        Enqueue(tmp, x)
+      else
+        Enqueue(qBig, x)
+      end if
+    end loop
+    qSmall :=: tmp
+  end Partition
+
+  procedure Sort (updates q: Queue)
+    decreases |q|
+    variable qLength, zero: Integer
+    qLength := Length(q)
+    if IsGreater(qLength, zero) then
+      variable partitionElement: Item
+      variable qBig: Queue
+      Dequeue(q, partitionElement)
+      Partition(q, qBig, partitionElement)
+      Sort(q)
+      Sort(qBig)
+      confirm IS_NON_DECREASING(<partitionElement> * qBig)
+      Enqueue(q, partitionElement)
+      confirm IS_NON_DECREASING(q)
+      Concatenate(q, qBig)
+    end if
+  end Sort
+
+end QuickSort

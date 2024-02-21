@@ -1,0 +1,8 @@
+contract FullReverse
+  enhances ListTemplate
+
+  procedure Reverse(updates s: List)
+    ensures
+      s.left = reverse(#s.right) and s.right = reverse(#s.left)
+
+end FullReverse

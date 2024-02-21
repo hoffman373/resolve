@@ -1,0 +1,14 @@
+contract WriteQueue
+  enhances OutputStreamTemplate
+
+  uses QueueTemplate
+
+  procedure WriteQueue(updates out: OutputStream,
+                       clears q: Queue)
+    requires
+      out.is_open
+    ensures
+      out.is_open and
+      out.items = #out.items * #q
+
+end WriteQueue

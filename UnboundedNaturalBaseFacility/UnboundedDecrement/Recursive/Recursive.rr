@@ -1,0 +1,17 @@
+realization Recursive
+  implements UnboundedDecrement for UnboundedNaturalBaseFacility
+
+  procedure Decrement (updates n: UnboundedNaturalBase)
+    decreases n
+    variable z, d, radix: Natural
+    radix := Radix(n)
+    DivideByRadix(n, d)
+    if AreEqual(d, z) then
+      d :=: radix
+      Decrement(n)
+    end if
+    Decrement(d)
+    MultiplyByRadix(n, d)
+  end Decrement
+
+end Recursive

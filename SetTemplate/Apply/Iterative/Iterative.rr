@@ -1,0 +1,28 @@
+realization Iterative (procedure Apply(restores x: Item,
+                                       replaces y: Item)
+                         ensures
+                           {y} = FUNCTION({x}))
+  implements Apply for SetTemplate
+
+  procedure Apply (restores s: Set,
+                   replaces t: Set)
+    variable tempSet: Set
+    Clear(t)
+    loop
+      maintains t = FUNCTION(tempSet) and
+                s intersection tempSet = empty_set and
+                s union tempSet = #s union #tempSet
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x, y: Item
+      RemoveAny(s, x)
+      Apply(x, y)
+      if not Contains(t, y) then
+        Add(t, y)
+      end if
+      Add(tempSet, x)
+    end loop
+    s :=: tempSet
+  end Apply
+
+end Iterative

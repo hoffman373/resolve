@@ -1,0 +1,81 @@
+realization QueueRealizationSplitSpecBug1 (function AreEqual (restores i: Item,
+                                                              restores j: Item) : control
+                                             ensures
+                                               AreEqual = (i = j))
+  implements SetTemplate
+
+  uses QueueTemplate
+  uses Concatenate for QueueTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility QueueFacility is QueueTemplate(Item)
+    enhanced by Concatenate
+
+  type representation for Set is (items: Queue)
+    exemplar s
+    convention |s.items| = |elements(s.items)|
+    correspondence function elements(s.items)
+  end Set
+
+  local procedure SplitAndExtract(updates q1: Queue,
+                                  restores x: Item,
+                                  replaces q2: Queue,
+                                  replaces y: Item)
+    requires |q1| > 0
+    ensures // #q1 = q2 * <y> * q1  and
+            (if x is in elements(#q1) then
+               y = x)
+    Clear(q2)
+    Dequeue(q1, y)
+    loop
+      maintains q2 * <y> * q1 = #q2 * <#y> * #q1 and
+                x is not in elements(q2) and
+                x = #x
+      decreases |q1|
+    while not IsEmpty(q1) and not AreEqual(x, y) do
+      Enqueue(q2, y)
+      Dequeue(q1, y)
+    end loop
+  end SplitAndExtract
+
+  procedure Add (updates s: Set,
+                 clears x: Item)
+    Enqueue(s.items, x)
+  end Add
+
+  procedure Remove (updates s: Set,
+                    restores x: Item,
+                    replaces xCopy: Item)
+    variable tmp: Queue
+    SplitAndExtract(s.items, x, tmp, xCopy)
+    Concatenate(s.items, tmp)
+  end Remove
+
+  procedure RemoveAny (updates s: Set,
+                       replaces x: Item)
+    Dequeue(s.items, x)
+  end RemoveAny
+
+  function Contains (restores s: Set,
+                     restores x: Item) : control
+    variable qLength: Integer
+    qLength := Length(s.items)
+    if IsPositive(qLength) then
+      variable y: Item
+      variable tmp: Queue
+      SplitAndExtract(s.items, x, tmp, y)
+      Contains := AreEqual(x, y)
+      Enqueue(s.items, y)
+      Concatenate(s.items, tmp)
+    end if
+  end Contains
+
+  function IsEmpty (restores s: Set) : control
+    IsEmpty := IsEmpty(s.items)
+  end IsEmpty
+
+  function Size (restores s: Set) : Integer
+    Size := Length(s.items)
+  end Size
+
+end QueueRealizationSplitSpecBug1

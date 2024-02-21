@@ -1,0 +1,28 @@
+realization Recursive
+  implements AreEqual for UnboundedNaturalBaseFacility
+
+  uses BooleanFacility
+
+  function AreEqual (restores n: UnboundedNaturalBase,
+                     restores m: UnboundedNaturalBase) : control
+  decreases m
+    if IsZero(m) or IsZero(n) then
+      AreEqual := IsZero(m) and IsZero(n)
+    else
+      variable md, nd: Natural
+      DivideByRadix(m, md)
+      DivideByRadix(n, nd)
+      confirm (0 < m) implies (m < m * RADIX)
+      confirm (m > n iff (m * RADIX >= n * RADIX + RADIX))
+      confirm ((m * RADIX > n * RADIX + nd) implies m * RADIX > n * RADIX)
+      confirm (m > n iff (m * RADIX > n * RADIX + nd))
+      confirm (n > m iff (n * RADIX >= m * RADIX + RADIX))
+      confirm ((n * RADIX > m * RADIX + md) implies n * RADIX > m * RADIX)
+      confirm (n > m iff (n * RADIX > m * RADIX + md))
+      AreEqual := AreEqual(m, n) and AreEqual(md, nd)
+      MultiplyByRadix(m, md)
+      MultiplyByRadix(n, nd)
+    end if
+  end AreEqual
+
+end Recursive

@@ -1,0 +1,18 @@
+realization ObviousRealization (function Function (restores i: DItem) : RItem
+                                  ensures
+                                    Function = F(i))
+  implements MemoizingMachineTemplate
+
+  uses BooleanFacility
+
+  type representation for MemoizingMachine is (item: Boolean)
+    exemplar m
+    correspondence function not m.item
+  end MemoizingMachine
+
+  function Compute (restores m: MemoizingMachine,
+                    restores d: DItem) : RItem
+    Compute := Function(d)
+  end Compute
+
+end ObviousRealization

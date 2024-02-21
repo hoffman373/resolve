@@ -1,0 +1,12 @@
+realization ThreeCopiesRealization
+  implements Exchange for IntegerFacility
+
+  procedure Exchange (updates i: Integer,
+                      updates j: Integer)
+    variable temp: Integer
+    temp := Replica(i)
+    i := Replica(j)
+    j := Replica(temp)
+  end Exchange
+
+end ThreeCopiesRealization

@@ -1,0 +1,50 @@
+realization BinarySearch
+  implements Sqrt for UnboundedIntegerFacility
+
+  uses Average for UnboundedIntegerFacility
+  uses Subtract for UnboundedIntegerFacility
+  uses Multiply for UnboundedIntegerFacility
+  uses Square for UnboundedIntegerFacility
+
+  procedure Sqrt (updates i: Integer)
+    variable one: Integer
+    Increment(one)
+    if IsGreater(i, one) then
+      variable two, t, hi, d: Integer
+      Increment(two)
+      Increment(two)
+      t := Replica(i)
+      hi := Replica(i)
+      Increment(hi)
+      Clear(i)
+      d := Replica(hi)
+      loop
+        maintains 0 <= i and i * i <= t and
+                  t < hi * hi and
+                  d = hi - i and
+                  one = #one and
+                  two = #two and
+                  t = #t and
+                  0 <= hi and
+                  hi <= #hi and
+                  #i <= i and
+                  i <= hi
+        decreases d
+      while IsGreater(d, one) do
+        variable m, msq: Integer
+        m := Replica(i)
+        Average(m, hi)
+        msq := Replica(m)
+        Square(msq)
+        if IsGreater(msq, t) then
+          hi :=: m
+        else
+          i :=: m
+        end if
+        d := Replica(hi)
+        Subtract(d, i)
+      end loop
+    end if
+  end Sqrt
+
+end BinarySearch

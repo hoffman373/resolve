@@ -1,0 +1,21 @@
+realization RemainderRealization
+  implements Mod for IntegerFacility
+
+  uses Add for IntegerFacility
+  uses Subtract for IntegerFacility
+  uses Remainder for IntegerFacility
+
+  procedure Mod (updates i: Integer,
+                 restores j: Integer)
+    variable z: Integer
+    Remainder(i, j)
+    if IsGreater(z, i) then
+      if IsGreater(j, z) then
+        Add(i, j)
+      else
+        Subtract(i, j)
+      end if
+    end if
+  end Mod
+
+end RemainderRealization

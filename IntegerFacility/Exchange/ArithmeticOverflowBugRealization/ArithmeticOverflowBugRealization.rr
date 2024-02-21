@@ -1,0 +1,16 @@
+realization ArithmeticOverflowBugRealization
+  implements Exchange for IntegerFacility
+
+  uses Add for IntegerFacility
+  uses Subtract for IntegerFacility
+  uses Negate for IntegerFacility
+
+  procedure Exchange (updates i: Integer,
+                      updates j: Integer)
+    Add(i, j)
+    Negate(j)
+    Add(j, i)
+    Subtract(i, j)
+  end Exchange
+
+end ArithmeticOverflowBugRealization

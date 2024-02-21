@@ -1,0 +1,24 @@
+realization Iterative2
+  implements Unite for SetTemplate
+
+  procedure Unite (updates s: Set,
+                   clears t: Set)
+    variable ss, ts: Integer
+    ss := Size(s)
+    ts := Size(t)
+    if IsGreater(ts, ss) then
+      s :=: t
+    end if
+    loop
+      maintains s union t = #s union #t
+      decreases |t|
+    while not IsEmpty(t) do
+      variable x: Item
+      RemoveAny(t, x)
+      if not Contains(s, x) then
+        Add(s, x)
+      end if
+    end loop
+  end Unite
+
+end Iterative2

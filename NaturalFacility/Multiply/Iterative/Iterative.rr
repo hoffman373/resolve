@@ -1,0 +1,27 @@
+realization Iterative
+  implements Multiply for NaturalFacility
+
+  uses IsPositive for NaturalFacility
+  uses Add for NaturalFacility
+
+  procedure Multiply (updates n: Natural,
+                      restores m: Natural)
+    variable p, k: Natural
+    /* Here is a comment
+    And here it ends
+    */
+    loop
+      maintains p + n * m = #p + #n * #m and
+                k + m = #k + #m and
+                n = #n
+      decreases m
+    while IsPositive(m) do
+      Add(p, n)
+      Increment(k)
+      Decrement(m)
+    end loop
+    n :=: p
+    m :=: k
+  end Multiply
+
+end Iterative

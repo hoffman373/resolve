@@ -1,0 +1,9 @@
+contract UnboundedMultiply
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Multiply(updates i: UnboundedNaturalBase,
+                     restores j: UnboundedNaturalBase)
+    ensures
+      i = #i * j
+
+end UnboundedMultiply

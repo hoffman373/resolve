@@ -1,0 +1,17 @@
+realization Iterative
+  implements Merge for CircularListTemplate
+
+  procedure Merge (updates s: CircularList,
+                   clears t: CircularList)
+    loop
+      maintains s * t = #s * #t
+      decreases |t|
+    while not IsEmpty(t) do
+      variable y: Item
+      Remove(t, y)
+      Insert(s, y)
+      Advance(s)
+    end loop
+  end Merge
+
+end Iterative

@@ -1,0 +1,17 @@
+realization RecursiveBug1
+  implements Reverse for ListTemplate
+
+  procedure Reverse (updates s: List)
+    decreases |s.right|
+    variable zero, len: Integer
+    len := RightLength(s)
+    if not AreEqual(len, zero) then
+      variable x: Item
+      Remove(s, x)
+      Reverse(s)
+      Insert(s, x)
+      // Advance (s)
+    end if
+  end Reverse
+
+end RecursiveBug1

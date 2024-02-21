@@ -1,0 +1,90 @@
+realization StackRealization (function AreEqual (restores i: Item,
+                                                 restores j: Item) : control
+                                ensures
+                                  AreEqual = (i = j))
+  implements SetTemplate
+
+  uses StackTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility StackFacility is StackTemplate(Item)
+
+  type representation for Set is (items: Stack)
+    exemplar s
+    convention |s.items| = |elements(s.items)|
+    correspondence function elements(s.items)
+  end Set
+
+  local procedure ReuniteTheTwoStacks(updates s1: Stack,
+                                      clears s2: Stack)
+    ensures s1 = reverse(#s2) * #s1
+    loop
+      maintains reverse(s2) * s1 = reverse(#s2) * #s1
+      decreases |s2|
+    while not IsEmpty(s2) do
+      variable x: Item
+      Pop(s2, x)
+      Push(s1, x)
+    end loop
+  end ReuniteTheTwoStacks
+
+  local procedure SplitAndExtract(updates s1: Stack,
+                                  restores x: Item,
+                                  replaces s2: Stack,
+                                  replaces y: Item)
+    requires |s1| > 0
+    ensures #s1 = reverse(s2) * <y> * s1 and
+            (if x is in elements(#s1) then
+               y = x)
+    Clear(s2)
+    Pop(s1, y)
+    loop
+      maintains reverse(s2) * <y> * s1 = reverse(#s2) * <#y> * #s1 and
+                x is not in elements(s2) and
+                x = #x
+      decreases |s1|
+    while not IsEmpty(s1) and not AreEqual(x, y) do
+      Push(s2, y)
+      Pop(s1, y)
+    end loop
+  end SplitAndExtract
+
+  procedure Add (updates s: Set,
+                 clears x: Item)
+    Push(s.items, x)
+  end Add
+
+  procedure Remove (updates s: Set,
+                    restores x: Item,
+                    replaces xCopy: Item)
+    variable s2: Stack
+    SplitAndExtract(s.items, x, s2, xCopy)
+    ReuniteTheTwoStacks(s.items, s2)
+  end Remove
+
+  procedure RemoveAny (updates s: Set,
+                       replaces x: Item)
+    Pop(s.items, x)
+  end RemoveAny
+
+  function Contains (restores s: Set,
+                     restores x: Item) : control
+    if not IsEmpty(s.items) then
+      variable s2: Stack
+      variable y: Item
+      SplitAndExtract(s.items, x, s2, y)
+      Contains := AreEqual(x, y)
+      Push(s.items, y)
+      ReuniteTheTwoStacks(s.items, s2)
+    end if
+  end Contains
+
+  function IsEmpty (restores s: Set) : control
+    IsEmpty := IsEmpty(s.items)
+  end IsEmpty
+
+  function Size (restores s: Set) : Integer
+    Size := Length(s.items)
+  end Size
+
+end StackRealization

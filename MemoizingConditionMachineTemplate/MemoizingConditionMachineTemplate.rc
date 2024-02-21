@@ -1,0 +1,14 @@
+contract MemoizingConditionMachineTemplate (type DItem,
+                                            definition F (x: DItem)
+                                              : boolean
+                                              satisfies true)
+  type MemoizingConditionMachine is modeled by boolean
+    exemplar m
+    initialization ensures m = true
+
+  function Compute (restores m: MemoizingConditionMachine,
+                    restores d: DItem) : control
+    ensures
+      Compute = F(d)
+
+end MemoizingConditionMachineTemplate

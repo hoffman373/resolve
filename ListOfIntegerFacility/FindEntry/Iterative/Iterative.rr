@@ -1,0 +1,45 @@
+realization Iterative
+  implements FindEntry for ListOfIntegerFacility
+
+  uses BooleanFacility
+
+  local procedure MoveFenceTo(updates s: List,
+                              restores x: Integer)
+    ensures s.left * s.right = #s.left * #s.right and
+            x is not in elements(s.left) and
+            (if (x is in elements(s.right)) then
+               (substring(s.right, 0, 1) = <x>)
+             else
+               (|s.right| = 0))
+    variable value: Integer
+    Reset(s)
+    if not RightIsEmpty(s) then
+      Remove(s, value)
+      loop
+        maintains x = #x and
+                  s.left * <value> * s.right =
+                  #s.left * <#value> * #s.right and
+                  x is not in elements(s.left)
+        decreases |s.right|
+      while not RightIsEmpty(s) and not AreEqual(x, value) do
+        Insert(s, value)
+        Advance(s)
+        Remove(s, value)
+      end loop
+      if AreEqual(x, value) then
+        Insert(s, value)
+      else
+        Insert(s, value)
+        Advance(s)
+      end if
+    end if
+  end MoveFenceTo
+
+  procedure FindEntry (updates s: List,
+                       restores x: Integer,
+                       replaces i: Integer)
+    MoveFenceTo(s, x)
+    i := LeftLength(s)
+  end FindEntry
+
+end Iterative

@@ -1,0 +1,28 @@
+realization EgyptianOverflowBug
+  implements Multiply for NaturalFacility
+
+  uses IsOdd for NaturalFacility
+  uses IsPositive for NaturalFacility
+  uses Double for NaturalFacility
+  uses Halve for NaturalFacility
+  uses Add for NaturalFacility
+
+  procedure Multiply (updates n: Natural,
+                      restores m: Natural)
+    variable b, p: Natural
+    b := Replica(m)
+    loop
+      maintains #p + #n * #m = p + n * m and b = #b
+      decreases m
+    while IsPositive(m) do
+      if IsOdd(m) then
+        Add(p, n)
+      end if
+      Double(n)
+      Halve(m)
+    end loop
+    n :=: p
+    m :=: b
+  end Multiply
+
+end EgyptianOverflowBug

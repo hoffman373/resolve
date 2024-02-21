@@ -1,0 +1,37 @@
+realization Iterative
+  implements FullReverse for ListTemplate
+
+  local procedure ReverseRight(updates s: List,
+                               updates l: List)
+    requires l.right = empty_string
+    ensures s.left = #s.left and
+            l.left = #l.left and
+            s.right = empty_string and
+            l.right = reverse(#s.right)
+    variable zero, lenR: Integer
+    lenR := RightLength(s)
+    loop
+      maintains reverse(l.right) * s.right = reverse(#l.right) * #s.right and
+                s.left = #s.left and
+                l.left = #l.left and
+                lenR = |s.right| and
+                zero = #zero
+      decreases |s.right|
+    while IsGreater(lenR, zero) do
+      variable x: Item
+      Remove(s, x)
+      Insert(l, x)
+      lenR := RightLength(s)
+    end loop
+  end ReverseRight
+
+  procedure Reverse (updates s: List)
+    variable listTemp: List
+    ReverseRight(s, listTemp)
+    Reset(s)
+    AdvanceToEnd(listTemp)
+    ReverseRight(s, listTemp)
+    listTemp :=: s
+  end Reverse
+
+end Iterative

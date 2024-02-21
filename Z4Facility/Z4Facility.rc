@@ -1,0 +1,31 @@
+contract Z4Facility
+  uses UnboundedIntegerFacility
+
+  math subtype Z4MODEL is integer
+    exemplar n
+    constraint n >= 0 and n < 4
+
+  type Z4 is modeled by Z4MODEL
+    exemplar i
+    initialization ensures i = 0
+
+  function Zero () : Z4
+    ensures
+      Zero = 0
+
+  function One () : Z4
+    ensures
+      One = 1
+
+  function Half (restores i: Z4) : Z4
+    ensures
+      Half = (i / 2) mod 4
+
+  function Double (restores i: Z4) : Z4
+    ensures
+      Double = (2 * i) mod 4
+
+//    function GetValue (restores i: Z4): Integer
+//        ensures
+//            GetValue = i
+end Z4Facility

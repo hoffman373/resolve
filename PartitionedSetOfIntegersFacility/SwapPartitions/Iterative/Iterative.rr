@@ -1,0 +1,29 @@
+realization Iterative
+  implements SwapPartitions for PartitionedSetOfIntegersFacility
+
+  procedure SwapPartitions (updates p: PartitionedSetOfIntegers)
+    variable temp: PartitionedSetOfIntegers
+    variable lo: Integer
+    variable hi: Integer
+    variable counter: Integer
+    GetDomain(p, lo, hi)
+    SetDomain(temp, lo, hi)
+    counter := Replica(lo)
+    loop
+      maintains lo = #lo and
+                hi = #hi and
+                p = #p and
+                for all i: integer
+                    where (i <= counter)
+                  (i is in temp.interesting iff i is in p.others)
+      decreases hi - counter + 1
+    while (not IsGreater(counter, hi)) do
+      if (not IsInteresting(p, counter)) then
+        MakeInteresting(temp, counter)
+      end if
+      Increment(counter)
+    end loop
+    temp :=: p
+  end SwapPartitions
+
+end Iterative

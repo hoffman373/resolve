@@ -1,0 +1,31 @@
+realization Recursive
+  implements UnboundedHalve for UnboundedNaturalBaseFacility
+
+  uses HalveWithRemainder for NaturalFacility
+  uses Add for NaturalFacility
+
+  procedure Halve (updates n: UnboundedNaturalBase,
+                   replaces r: UnboundedNaturalBase)
+    decreases n
+    variable d, r2, radix: Natural
+    Clear(r)
+    if not IsZero(n) then
+      radix := Radix(n)
+      DivideByRadix(n, d)
+      confirm (0 < n) implies (n < n * RADIX)
+      Halve(n, r)
+      if not IsZero(r) then
+        Clear(r)
+        confirm (d + radix) < (2 * radix)
+        Add(d, radix)
+        HalveWithRemainder(d, r2)
+        confirm (2 * d) < (2 * radix)
+      else
+        HalveWithRemainder(d, r2)
+      end if
+      MultiplyByRadix(n, d)
+      MultiplyByRadix(r, r2)
+    end if
+  end Halve
+
+end Recursive

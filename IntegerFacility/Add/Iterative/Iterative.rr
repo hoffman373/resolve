@@ -1,0 +1,24 @@
+realization Iterative
+  implements Add for IntegerFacility
+
+  procedure Add (updates i: Integer,
+                 restores j: Integer)
+    variable nj, z: Integer
+    loop
+      maintains i + j = #i + #j and nj + j = #nj + #j and z = 0
+      decreases |j|
+    while not AreEqual(j, z) do
+      if IsGreater(j, z) then
+        Increment(i)
+        Increment(nj)
+        Decrement(j)
+      else
+        Decrement(i)
+        Decrement(nj)
+        Increment(j)
+      end if
+    end loop
+    j :=: nj
+  end Add
+
+end Iterative

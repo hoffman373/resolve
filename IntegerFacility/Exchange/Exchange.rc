@@ -1,0 +1,11 @@
+contract Exchange
+  enhances IntegerFacility
+
+  procedure Exchange(updates i: Integer,
+                     updates j: Integer)
+    requires
+      MIN <= i + j and i + j <= MAX
+    ensures
+      i = #j and j = #i
+
+end Exchange

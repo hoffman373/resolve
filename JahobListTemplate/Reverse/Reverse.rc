@@ -1,0 +1,10 @@
+contract Reverse
+  enhances JahobListTemplate
+
+  procedure Reverse(updates s: List)
+    requires
+      s.total = s.remaining
+    ensures
+      s.total = reverse(#s.total) and s.remaining = empty_string
+
+end Reverse

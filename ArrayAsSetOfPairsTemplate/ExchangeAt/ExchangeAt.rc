@@ -1,0 +1,20 @@
+contract ExchangeAt
+  enhances ArrayAsSetOfPairsTemplate
+
+  procedure ExchangeAt(updates a: Array,
+                       restores i: Integer,
+                       restores j: Integer)
+    requires
+      a.lb <= i and i <= a.ub and
+      a.lb <= j and
+      j <= a.ub
+    ensures
+      there exists x,
+                   y: Item
+        ({(i, x), (j, y)} is subset of #a.table and
+        a.table = (#a.table \ {(i, x), (j, y)}) union
+        {(i, y), (j, x)}) and
+      a.lb = #a.lb and
+      a.ub = #a.ub
+
+end ExchangeAt

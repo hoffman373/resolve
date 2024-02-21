@@ -1,0 +1,32 @@
+realization Iterative
+  implements ConvertToArray for SequenceWithSubstringTemplate
+
+  procedure ConvertToArray (clears s1: Sequence,
+                            replaces s2: Array)
+    variable zero, length, place: Integer
+    Clear(s2)
+    length := Length(s1)
+    Decrement(length)
+    SetBounds(s2, zero, length)
+    length := Length(s1)
+    loop
+      maintains substring(s2.s, 0, place) = substring(#s1, 0, place) and
+                s1 = substring(#s1, place, |#s1|) and
+                length = #length and
+                zero = #zero and
+                s2.lb = #s2.lb and
+                s2.ub = #s2.ub and
+                place >= s2.lb and
+                place <= |s2.s| and
+                |s1| = length - place and
+                |s2.s| = |#s1|
+      decreases |s1|
+    while IsGreater(length, place) do
+      variable x: Item
+      Remove(s1, zero, x)
+      SwapItem(s2, place, x)
+      Increment(place)
+    end loop
+  end ConvertToArray
+
+end Iterative

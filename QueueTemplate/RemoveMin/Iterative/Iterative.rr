@@ -1,0 +1,26 @@
+realization Iterative (function AreInOrder (restores i: Item,
+                                            restores j: Item) : control
+                         ensures
+                           AreInOrder = ARE_IN_ORDER(i, j))
+  implements RemoveMin for QueueTemplate
+
+  procedure RemoveMin (updates q: Queue,
+                       replaces min: Item)
+    variable tmp: Queue
+    Dequeue(q, min)
+    loop
+      maintains IsPermutation(tmp * q * <min>, #tmp * #q * <#min>) and
+                IsPreceding(<min>, tmp)
+      decreases |q|
+    while not IsEmpty(q) do
+      variable x: Item
+      Dequeue(q, x)
+      if not AreInOrder(min, x) then
+        min :=: x
+      end if
+      Enqueue(tmp, x)
+    end loop
+    q :=: tmp
+  end RemoveMin
+
+end Iterative

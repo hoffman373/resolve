@@ -1,0 +1,17 @@
+contract FilterWithQuantifier (definition KEEP (x: Item)
+                                 : boolean
+                                 satisfies true)
+  enhances SetTemplate
+
+  procedure Filter(updates s: Set,
+                   replaces t: Set)
+    ensures
+      s union t = #s and
+      for all x: Item
+          where (x is in s)
+        (KEEP(x)) and
+      for all x: Item
+          where (x is in t)
+        (not KEEP(x))
+
+end FilterWithQuantifier

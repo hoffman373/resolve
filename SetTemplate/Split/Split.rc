@@ -1,0 +1,26 @@
+contract Split (definition IS_PRECEDING (x: finite set of Item,
+                                         y: finite set of Item)
+                  : boolean
+                  satisfies restriction IS_PRECEDING(x, empty_set) and
+                                        IS_PRECEDING(empty_set, x) and
+                                        (IS_PRECEDING(x, y) or IS_PRECEDING(y, x)) and
+                                        for all t,
+                                                s: finite set of Item
+                                            where (y = t union s and IS_PRECEDING(x, y))
+                                          (IS_PRECEDING(x, t) and IS_PRECEDING(x, s)) and
+                                        for all t,
+                                                s: finite set of Item
+                                            where (x = t union s and IS_PRECEDING(x, y))
+                                          (IS_PRECEDING(t, y) and IS_PRECEDING(s, y)))
+  enhances SetTemplate
+
+  procedure Split(updates s: Set,
+                  restores x: Item,
+                  replaces t: Set)
+    ensures
+      #s = s union t and
+      s intersection t = empty_set and
+      IS_PRECEDING(s, {x}) and
+      IS_PRECEDING({x}, t)
+
+end Split

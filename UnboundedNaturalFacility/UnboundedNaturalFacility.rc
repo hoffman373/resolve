@@ -1,0 +1,34 @@
+contract UnboundedNaturalFacility
+  math subtype NATURALMODEL is integer
+    exemplar n
+    constraint n >= 0
+
+  type Natural is modeled by NATURALMODEL
+    exemplar n
+    initialization ensures n = 0
+
+  procedure Increment(updates n: Natural)
+    ensures
+      n = #n + 1
+
+  procedure Decrement(updates n: Natural)
+    requires
+      n > 0
+    ensures
+      n = #n - 1
+
+  function AreEqual (restores m: Natural,
+                     restores n: Natural) : control
+    ensures
+      AreEqual = (m = n)
+
+  function IsGreater (restores m: Natural,
+                      restores n: Natural) : control
+    ensures
+      IsGreater = (m > n)
+
+  function Replica (restores n: Natural) : Natural
+    ensures
+      Replica = n
+
+end UnboundedNaturalFacility

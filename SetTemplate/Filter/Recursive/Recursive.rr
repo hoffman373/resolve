@@ -1,0 +1,24 @@
+realization Recursive (function keep (restores x: Item) : control
+                         ensures
+                           keep = x is in KEEP_SET)
+  implements Filter for SetTemplate
+
+  procedure Filter (updates s: Set,
+                    replaces t: Set)
+    decreases |s|
+    Clear(t)
+    if not IsEmpty(s) then
+      variable x: Item
+      RemoveAny(s, x)
+      Filter(s, t)
+      if keep(x) then
+        Add(s, x)
+      else
+        Add(t, x)
+      end if
+    else
+      Clear(t)
+    end if
+  end Filter
+
+end Recursive

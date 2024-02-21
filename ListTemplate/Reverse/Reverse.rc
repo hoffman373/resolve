@@ -1,0 +1,10 @@
+contract Reverse
+  enhances ListTemplate
+
+  procedure Reverse(updates s: List)
+    requires
+      s.left = empty_string
+    ensures
+      s.left = reverse(#s.right) and s.right = empty_string
+
+end Reverse

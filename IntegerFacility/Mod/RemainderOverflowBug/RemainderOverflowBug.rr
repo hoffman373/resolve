@@ -1,0 +1,14 @@
+realization RemainderOverflowBug
+  implements Mod for IntegerFacility
+
+  uses Add for IntegerFacility
+  uses Remainder for IntegerFacility
+
+  procedure Mod (updates i: Integer,
+                 restores j: Integer)
+    Remainder(i, j)
+    Add(i, j)
+    Remainder(i, j)
+  end Mod
+
+end RemainderOverflowBug

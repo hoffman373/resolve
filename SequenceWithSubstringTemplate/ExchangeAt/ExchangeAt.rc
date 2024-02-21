@@ -1,0 +1,12 @@
+contract ExchangeAt
+  enhances SequenceWithSubstringTemplate
+
+  procedure ExchangeAt(updates s: Sequence,
+                       restores x: Integer,
+                       restores y: Integer)
+    requires
+      0 <= x and x <= y and y < |s|
+    ensures
+      s = substring(#s, 0, x) * substring(#s, y, y + 1) * substring(#s, x + 1, y) * substring(#s, x, x + 1) * substring(#s, y + 1, |s|)
+
+end ExchangeAt

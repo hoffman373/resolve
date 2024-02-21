@@ -1,0 +1,17 @@
+realization Iterative
+  implements Reverse for BoundedStackTemplate
+
+  procedure Reverse (updates s: Stack)
+    variable tmp: Stack
+    loop
+      maintains reverse(s) * tmp = reverse(#s) * #tmp
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x: Item
+      Pop(s, x)
+      Push(tmp, x)
+    end loop
+    s :=: tmp
+  end Reverse
+
+end Iterative

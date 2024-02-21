@@ -1,0 +1,12 @@
+contract SwapBoth
+  enhances PairTemplate
+
+  procedure SwapBoth(updates p: Pair,
+                     updates f: FirstItem,
+                     updates s: SecondItem)
+    ensures
+      p = (#f, #s) and
+      f = #p.x and
+      s = #p.y
+
+end SwapBoth

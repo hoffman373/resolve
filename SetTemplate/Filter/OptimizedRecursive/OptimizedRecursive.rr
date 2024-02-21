@@ -1,0 +1,41 @@
+realization OptimizedRecursive (function keep (restores x: Item) : control
+                                  ensures
+                                    keep = x is in KEEP_SET)
+  implements Filter for SetTemplate
+
+  local procedure OptimizedFilter(clears s: Set,
+                                  updates t: Set,
+                                  updates acc: Set)
+    requires //(SD)           acc is subset of KEEP_SET and
+             acc union KEEP_SET = KEEP_SET and
+             acc intersection KEEP_SET = acc and
+             acc intersection s = empty_set and
+             t intersection (s union KEEP_SET) = empty_set
+    ensures acc = #acc union (#s intersection KEEP_SET) and
+            t = #t union (#s \ KEEP_SET)
+    decreases |s|
+    if not IsEmpty(s) then
+      adjunct variable oldSet: MATHTYPE
+      variable x: Item
+      adjunct oldSet := s
+      RemoveAny(s, x)
+      if keep(x) then
+      //                confirm s \ KEEP_SET = oldSet \ KEEP_SET
+        Add(acc, x)
+      else
+        confirm s intersection KEEP_SET = oldSet intersection KEEP_SET
+        Add(t, x)
+      end if
+      OptimizedFilter(s, t, acc)
+    end if
+  end OptimizedFilter
+
+  procedure Filter (updates s: Set,
+                    replaces t: Set)
+    variable acc: Set
+    Clear(t)
+    OptimizedFilter(s, t, acc)
+    s :=: acc
+  end Filter
+
+end OptimizedRecursive

@@ -1,0 +1,12 @@
+contract Split
+  enhances SequenceTemplate
+
+  procedure Split(updates s1: Sequence,
+                  restores pos: Integer,
+                  replaces s2: Sequence)
+    requires
+      0 <= pos and pos <= |s1|
+    ensures
+      #s1 = s1 * s2 and |s1| = pos
+
+end Split

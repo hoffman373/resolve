@@ -1,0 +1,11 @@
+contract Add
+  enhances NaturalFacility
+
+  procedure Add(updates n: Natural,
+                restores m: Natural)
+    requires
+      n + m <= MAX
+    ensures
+      n = #n + m
+
+end Add

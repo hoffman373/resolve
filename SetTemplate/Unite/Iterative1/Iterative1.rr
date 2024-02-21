@@ -1,0 +1,18 @@
+realization Iterative1
+  implements Unite for SetTemplate
+
+  procedure Unite (updates s: Set,
+                   clears t: Set)
+    loop
+      maintains s union t = #s union #t
+      decreases |t|
+    while not IsEmpty(t) do
+      variable x: Item
+      RemoveAny(t, x)
+      if not Contains(s, x) then
+        Add(s, x)
+      end if
+    end loop
+  end Unite
+
+end Iterative1

@@ -1,0 +1,70 @@
+realization Recursive
+  implements Comparison for UnboundedNaturalBaseFacility
+
+  uses BooleanFacility
+
+  local procedure Compare(restores m: UnboundedNaturalBase,
+                          restores n: UnboundedNaturalBase,
+                          replaces eq: Boolean,
+                          replaces gt: Boolean)
+    ensures eq = (m = n) and gt = (m > n)
+    decreases m
+    if IsZero(m) or IsZero(n) then
+      Clear(eq)
+      Clear(gt)
+      if IsZero(m) and IsZero(n) then
+        Negate(eq)
+      else
+        if IsZero(n) then
+          Negate(gt)
+        end if
+      end if
+    else
+      variable md, nd: Natural
+      DivideByRadix(m, md)
+      DivideByRadix(n, nd)
+      confirm (0 < m) implies (m < m * RADIX)
+      Compare(m, n, eq, gt)
+      confirm (m > n iff (m * RADIX >= n * RADIX + RADIX))
+      confirm ((m * RADIX > n * RADIX + nd) implies m * RADIX > n * RADIX)
+      confirm (m > n iff (m * RADIX > n * RADIX + nd))
+      confirm (n > m iff (n * RADIX >= m * RADIX + RADIX))
+      confirm ((n * RADIX > m * RADIX + md) implies n * RADIX > m * RADIX)
+      confirm (n > m iff (n * RADIX > m * RADIX + md))
+      if IsTrue(eq) then
+        if IsGreater(md, nd) then
+          Negate(eq)
+          Negate(gt)
+        else
+          if IsGreater(nd, md) then
+            Negate(eq)
+          end if
+        end if
+      end if
+      MultiplyByRadix(m, md)
+      MultiplyByRadix(n, nd)
+    end if
+  end Compare
+
+  function AreEqual (restores n: UnboundedNaturalBase,
+                     restores m: UnboundedNaturalBase) : control
+    variable eq, gt: Boolean
+    Compare(n, m, eq, gt)
+    AreEqual := IsTrue(eq)
+  end AreEqual
+
+  function IsGreater (restores n: UnboundedNaturalBase,
+                      restores m: UnboundedNaturalBase) : control
+    variable eq, gt: Boolean
+    Compare(n, m, eq, gt)
+    IsGreater := IsTrue(gt)
+  end IsGreater
+
+  function IsGreaterOrEqual (restores n: UnboundedNaturalBase,
+                             restores m: UnboundedNaturalBase) : control
+    variable eq, gt: Boolean
+    Compare(n, m, eq, gt)
+    IsGreaterOrEqual := IsTrue(eq) or IsTrue(gt)
+  end IsGreaterOrEqual
+
+end Recursive

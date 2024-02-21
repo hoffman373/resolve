@@ -1,0 +1,83 @@
+contract ArrayOfIntegerAsSetOfPairsFacility
+  uses UnboundedIntegerFacility
+
+  definition IS_PARTIAL_FUNCTION (m: finite set of (i: integer,
+                                                    x: integer))
+    : boolean
+     is
+    for all i1,
+            i2,
+            x1,
+            x2: integer
+        where ((i1, x1) is in m and (i2, x2) is in m)
+      (if i1 = i2 then
+        x1 = x2)
+
+  definition IS_VALID_ARRAY (lb: integer,
+                             ub: integer,
+                             table: finite set of (i: integer,
+                                                   x: integer))
+    : boolean
+     is
+    IS_PARTIAL_FUNCTION(table) and
+    for all i: integer
+      (there exists x: integer
+        (((i, x) is in table) iff (lb <= i and i <= ub)))
+
+  math subtype ARRAY_MODEL is (lb: integer,
+                               ub: integer,
+                               table: finite set of (i: integer,
+                                                     x: integer))
+    exemplar a
+    constraint a.lb <= a.ub + 1 and
+               IS_VALID_ARRAY(a.lb, a.ub, a.table)
+
+  definition DIFFER_ONLY_AT (a1: ARRAY_MODEL,
+                             a2: ARRAY_MODEL,
+                             i: integer)
+    : boolean
+     is
+    a1.lb = a2.lb and
+    a1.ub = a2.ub and
+    for all j: integer,
+            x: integer
+        where (j /= i)
+      (((j, x) is in a1.table) iff ((j, x) is in a2.table))
+
+  definition ALL_INITIAL (a: ARRAY_MODEL)
+    : boolean
+     is
+    for all i: integer
+      ((i, 0) is in a.table iff (a.lb <= i and i <= a.ub))
+
+  type Array is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_set)
+
+  procedure SetBounds(updates a: Array,
+                      restores lower: Integer,
+                      restores upper: Integer)
+    ensures
+      a.lb = lower and
+      a.ub = upper and
+      ALL_INITIAL(a)
+
+  procedure SwapItem(updates a: Array,
+                     restores i: Integer,
+                     updates x: Integer)
+    requires
+      a.lb <= i and i <= a.ub
+    ensures
+      (i, x) is in #a.table and
+      (i, #x) is in a.table and
+      DIFFER_ONLY_AT(a, #a, i)
+
+  function LowerBound (restores a: Array) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: Array) : Integer
+    ensures
+      UpperBound = a.ub
+
+end ArrayOfIntegerAsSetOfPairsFacility

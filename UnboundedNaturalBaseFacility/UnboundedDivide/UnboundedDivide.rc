@@ -1,0 +1,12 @@
+contract UnboundedDivide
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Divide(updates i: UnboundedNaturalBase,
+                   restores j: UnboundedNaturalBase,
+                   replaces r: UnboundedNaturalBase)
+    requires
+      j /= 0
+    ensures
+      #i = i * j + r and 0 <= r and r < j
+
+end UnboundedDivide

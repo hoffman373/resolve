@@ -1,0 +1,18 @@
+realization IterativeDecBug
+  implements Add for UnboundedNaturalFacility
+
+  procedure Add (updates n: Natural,
+                 restores m: Natural)
+    variable k, z: Natural
+    loop
+      maintains n + m = #n + #m and k + m = #k + #m and z = 0
+      decreases m
+    while not AreEqual(m, z) do
+      Increment(n)
+      Increment(k)
+      // Decrement (m)
+    end loop
+    m :=: k
+  end Add
+
+end IterativeDecBug

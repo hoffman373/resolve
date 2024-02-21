@@ -1,0 +1,20 @@
+realization Iterative
+  implements ReadSet for InputStreamTemplate
+
+  procedure ReadSet (updates ins: InputStream,
+                     replaces s: Set)
+    Clear(s)
+    loop
+      maintains s union elements(ins.items) = #s union elements(#ins.items) and
+                ins.is_open
+      decreases |ins.items|
+    while not Is_Empty(ins) do
+      variable x: Item
+      Get(ins, x)
+      if not Contains(s, x) then
+        Add(s, x)
+      end if
+    end loop
+  end ReadSet
+
+end Iterative

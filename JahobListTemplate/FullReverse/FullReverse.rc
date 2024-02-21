@@ -1,0 +1,8 @@
+contract FullReverse
+  enhances JahobListTemplate
+
+  procedure Reverse(updates s: List)
+    ensures
+      s.total = reverse(#s.total) and s.remaining = reverse(SUBSTRING(#s.total, 0, |#s.total| - |#s.remaining|))
+
+end FullReverse

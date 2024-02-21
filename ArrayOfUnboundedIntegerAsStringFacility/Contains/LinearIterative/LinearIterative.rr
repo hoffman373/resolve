@@ -1,0 +1,27 @@
+realization LinearIterative
+  implements Contains for ArrayOfUnboundedIntegerAsStringFacility
+
+  function Contains (restores a: ArrayOfInteger,
+                     restores x: Integer) : control
+    variable pos: Integer
+    variable ub: Integer
+    pos := LowerBound(a)
+    ub := UpperBound(a)
+    loop
+      maintains a = #a and
+                x = #x and
+                a.lb <= pos and
+                pos <= ub + 1 and
+                ub = a.ub and
+                Contains = (x is in elements(substring(a.s, 0, pos - a.lb)))
+      decreases ub - pos + 1
+    while not Contains and not IsGreater(pos, ub) do
+      variable y: Integer
+      SwapItem(a, pos, y)
+      Contains := AreEqual(x, y)
+      SwapItem(a, pos, y)
+      Increment(pos)
+    end loop
+  end Contains
+
+end LinearIterative

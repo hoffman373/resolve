@@ -1,0 +1,11 @@
+contract Subtract
+  enhances IntegerFacility
+
+  procedure Subtract(updates i: Integer,
+                     restores j: Integer)
+    requires
+      MIN <= i - j and i - j <= MAX
+    ensures
+      i = #i - j
+
+end Subtract

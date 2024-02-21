@@ -1,0 +1,15 @@
+contract FindEntry
+  enhances ListOfIntegerFacility
+
+  procedure FindEntry(updates s: List,
+                      restores x: Integer,
+                      replaces i: Integer)
+    ensures
+      s.left * s.right = #s.left * #s.right and
+      x is not in elements(substring(s.left * s.right, 0, i)) and
+      (if x is in elements(s.left * s.right) then
+         substring(s.left * s.right, i, i + 1) = <x>
+       else
+         (i = |s.left| + |s.right|))
+
+end FindEntry

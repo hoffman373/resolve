@@ -1,0 +1,13 @@
+contract Apply (definition FUNCTION (x: finite set of Item)
+                  : finite set of Item
+                  satisfies FUNCTION(empty_set) = empty_set and for all s,
+                                                                        t: finite set of Item
+                              (FUNCTION(s union t) = FUNCTION(s) union FUNCTION(s)))
+  enhances SetTemplate
+
+  procedure Apply(restores s: Set,
+                  replaces t: Set)
+    ensures
+      t = FUNCTION(s)
+
+end Apply

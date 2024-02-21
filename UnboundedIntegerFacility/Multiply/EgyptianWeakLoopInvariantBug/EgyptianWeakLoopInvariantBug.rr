@@ -1,0 +1,42 @@
+realization EgyptianWeakLoopInvariantBug
+  implements Multiply for UnboundedIntegerFacility
+
+  uses IsNegative for UnboundedIntegerFacility
+  uses IsOdd for UnboundedIntegerFacility
+  uses IsPositive for UnboundedIntegerFacility
+  uses Negate for UnboundedIntegerFacility
+  uses Double for UnboundedIntegerFacility
+  uses Halve for UnboundedIntegerFacility
+  uses Add for UnboundedIntegerFacility
+
+  procedure Multiply (updates i: Integer,
+                      restores j: Integer)
+    variable b, p, ps: Integer
+    b := Replica(j)
+    Increment(ps)
+    if IsNegative(i) then
+      Negate(i)
+      Negate(ps)
+    end if
+    if IsNegative(j) then
+      Negate(j)
+      Negate(ps)
+    end if
+    loop
+      maintains #i * #j = i * j + p and j >= 0 and b = #b
+      decreases j
+    while IsPositive(j) do
+      if IsOdd(j) then
+        Add(p, i)
+      end if
+      Double(i)
+      Halve(j)
+    end loop
+    if IsNegative(ps) then
+      Negate(p)
+    end if
+    i :=: p
+    j :=: b
+  end Multiply
+
+end EgyptianWeakLoopInvariantBug

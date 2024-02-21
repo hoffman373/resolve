@@ -1,0 +1,31 @@
+contract Z2Facility
+  uses UnboundedIntegerFacility
+
+  math subtype Z2MODEL is integer
+    exemplar n
+    constraint n >= 0 and n < 2
+
+  type Z2 is modeled by Z2MODEL
+    exemplar i
+    initialization ensures i = 0
+
+  function C0 () : Z2
+    ensures
+      C0 = 0
+
+  function C1 () : Z2
+    ensures
+      C1 = 1
+
+  function A (restores i: Z2) : Z2
+    ensures
+      A = 0
+
+  procedure B(updates i: Z2)
+    ensures
+      true
+
+//    function GetValue (restores i: Z2): Integer
+//        ensures
+//            GetValue = i
+end Z2Facility

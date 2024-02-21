@@ -1,0 +1,8 @@
+contract QuantityInitialized
+  enhances UninitializedArrayTemplate
+
+  function QuantityInitialized (restores a: Array) : Integer
+    ensures
+      QuantityInitialized = |a.initialized|
+
+end QuantityInitialized

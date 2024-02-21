@@ -1,0 +1,75 @@
+realization Recursive
+  implements FullReverse for ListTemplate
+
+  local procedure RemoveLeft(updates s: List,
+                             replaces r: List)
+    ensures s.left = empty_string and s.right = #s.right and
+            r.left = #s.left and
+            r.right = empty_string
+    variable zero, len: Integer
+    Clear(r)
+    len := LeftLength(s)
+    Reset(s)
+    loop
+      maintains zero = #zero and
+                r.right = empty_string and
+                s.left = empty_string and
+                len + |r.left| = #len + |#r.left| and
+                len + |#s.right| = #len + |s.right| and
+                r.left * s.right = #r.left * #s.right and
+                len >= 0
+      decreases len
+    while IsGreater(len, zero) do
+      variable x: Item
+      Remove(s, x)
+      Insert(r, x)
+      AdvanceToEnd(r)
+      Decrement(len)
+    end loop
+  end RemoveLeft
+
+  local procedure MergeReversedRight(updates s: List,
+                                     clears r: List)
+    requires s.right = empty_string and r.left = empty_string
+    ensures s = (#s.left, reverse(#r.right))
+    variable zero, len: Integer
+    len := RightLength(r)
+    loop
+      maintains zero = #zero and
+                r.left = #r.left and
+                s.left = #s.left and
+                len = |r.right| and
+                s.left * reverse(r.right) * s.right = #s.left * reverse(#r.right) * #s.right
+      decreases len
+    while IsGreater(len, zero) do
+      variable x: Item
+      Remove(r, x)
+      Insert(s, x)
+      Decrement(len)
+    end loop
+  end MergeReversedRight
+
+  procedure Reverse (updates s: List)
+    decreases (|s.right| + |s.right| * |s.left| + |s.left|)
+    variable len, zero: Integer
+    len := LeftLength(s)
+    if IsGreater(len, zero) then
+      variable left: List
+      RemoveLeft(s, left)
+      len := RightLength(left)
+      Reverse(s)
+      Reset(left)
+      MergeReversedRight(s, left)
+    else
+      len := RightLength(s)
+      if not AreEqual(len, zero) then
+        variable x: Item
+        Remove(s, x)
+        Reverse(s)
+        Insert(s, x)
+        Advance(s)
+      end if
+    end if
+  end Reverse
+
+end Recursive

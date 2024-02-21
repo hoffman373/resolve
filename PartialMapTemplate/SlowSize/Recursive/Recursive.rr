@@ -1,0 +1,16 @@
+realization Recursive
+  implements SlowSize for PartialMapTemplate
+
+  function SlowSize (restores m: PartialMap) : Integer
+  decreases |m|
+    if not IsEmpty(m) then
+      variable d: DItem
+      variable r: RItem
+      UndefineAny(m, d, r)
+      SlowSize := SlowSize(m)
+      Define(m, d, r)
+      Increment(SlowSize)
+    end if
+  end SlowSize
+
+end Recursive

@@ -1,0 +1,54 @@
+contract ArrayOfIntegerAsStringFacility
+  uses IntegerFacility
+
+  definition DIFFER_ONLY_AT (s1: string of integer,
+                             s2: string of integer,
+                             d: finite set of integer)
+    : boolean
+     is
+    |s1| = |s2| and
+    for all i: integer
+        where (i is not in d)
+      (substring(s1, i, i + 1) = substring(s2, i, i + 1))
+
+  math subtype ARRAY_MODEL is (lb: INTEGERMODEL,
+                               ub: INTEGERMODEL,
+                               s: string of integer)
+    exemplar a
+    constraint a.lb <= a.ub + 1 and
+               |a.s| = a.ub - a.lb + 1 and
+               |a.s| <= MAX
+
+  type ArrayOfInteger is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_string)
+
+  procedure SetBounds(updates a: ArrayOfInteger,
+                      restores lower: Integer,
+                      restores upper: Integer)
+    requires
+      lower <= upper
+    ensures
+      a.lb = lower and a.ub = upper
+
+  procedure SwapItem(updates a: ArrayOfInteger,
+                     restores i: Integer,
+                     updates x: Integer)
+    requires
+      a.lb <= i and i <= a.ub
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      DIFFER_ONLY_AT(a.s, #a.s, {i - a.lb}) and
+      substring(a.s, i - a.lb, i - a.lb + 1) = <#x> and
+      substring(#a.s, i - #a.lb, i - #a.lb + 1) = <x>
+
+  function LowerBound (restores a: ArrayOfInteger) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: ArrayOfInteger) : Integer
+    ensures
+      UpperBound = a.ub
+
+end ArrayOfIntegerAsStringFacility

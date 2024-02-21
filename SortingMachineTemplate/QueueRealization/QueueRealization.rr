@@ -1,0 +1,54 @@
+realization QueueRealization (function AreInOrder (restores i: Item,
+                                                   restores j: Item) : control
+                                ensures
+                                  AreInOrder = (ARE_IN_ORDER1(i, j)))
+  implements SortingMachineTemplate
+
+  uses QueueTemplate
+  uses BooleanFacility
+  uses Sort for QueueTemplate
+
+  facility QueueFacility is QueueTemplate(Item)
+    enhanced by Sort(ARE_IN_ORDER1)
+
+  type representation for SortingMachine is (items: Queue, inserting: Boolean)
+    exemplar s
+    convention ((not s.inserting) implies IS_NON_DECREASING(s.items))
+    correspondence function (s.items, s.inserting)
+    initialization
+      Negate(s.inserting)
+  end SortingMachine
+
+  procedure Add (updates s: SortingMachine,
+                 clears x: Item)
+    Enqueue(s.items, x)
+  end Add
+
+  procedure RemoveASmallest (updates s: SortingMachine,
+                             replaces x: Item)
+    Dequeue(s.items, x)
+  end RemoveASmallest
+
+  procedure RemoveAny (updates s: SortingMachine,
+                       replaces x: Item)
+    Dequeue(s.items, x)
+  end RemoveAny
+
+  procedure SwitchToExtractionPhase (updates s: SortingMachine)
+    Negate(s.inserting)
+    Sort(s.items)
+  end SwitchToExtractionPhase
+
+  function Length (restores s: SortingMachine) : Integer
+    Length := Length(s.items)
+  end Length
+
+  function IsEmpty (restores s: SortingMachine) : control
+    IsEmpty := IsEmpty(s.items)
+  end IsEmpty
+
+  function IsInInsertingPhase (restores s: SortingMachine) : control
+    IsInInsertingPhase := IsTrue(s.inserting)
+  end IsInInsertingPhase
+
+end QueueRealization

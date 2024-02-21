@@ -1,0 +1,44 @@
+contract ArrayAsStringTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype ARRAY_MODEL is (lb: integer,
+                               ub: integer,
+                               s: string of Item)
+    exemplar a
+    constraint a.lb <= a.ub + 1 and
+               |a.s| = a.ub - a.lb + 1
+
+  type Array is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_string)
+
+  procedure SetBounds(updates a: Array,
+                      restores lower: Integer,
+                      restores upper: Integer)
+    requires
+      lower <= upper + 1
+    ensures
+      a.lb = lower and a.ub = upper
+
+  procedure SwapItem(updates a: Array,
+                     restores i: Integer,
+                     updates x: Item)
+    requires
+      a.lb <= i and i <= a.ub
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      substring(a.s, 0, i - a.lb) = substring(#a.s, 0, i - #a.lb) and
+      substring(a.s, i + 1 - a.lb, |a.s|) = substring(#a.s, i + 1 - #a.lb, |#a.s|) and
+      substring(a.s, i - a.lb, i + 1 - a.lb) = <#x> and
+      substring(#a.s, i - #a.lb, i + 1 - #a.lb) = <x>
+
+  function LowerBound (restores a: Array) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: Array) : Integer
+    ensures
+      UpperBound = a.ub
+
+end ArrayAsStringTemplate

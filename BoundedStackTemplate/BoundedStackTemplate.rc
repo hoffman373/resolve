@@ -1,0 +1,42 @@
+contract BoundedStackTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  definition MAX_DEPTH
+    : integer
+    satisfies restriction 0 < MAX_DEPTH
+
+  math subtype STACK_MODEL is string of Item
+    exemplar s
+    constraint |s| <= MAX_DEPTH
+
+  type Stack is modeled by STACK_MODEL
+    exemplar s
+    initialization ensures s = empty_string
+
+  procedure Push(updates s: Stack,
+                 clears x: Item)
+    requires
+      |s| < MAX_DEPTH
+    ensures
+      s = <#x> * #s
+
+  procedure Pop(updates s: Stack,
+                replaces x: Item)
+    requires
+      s /= empty_string
+    ensures
+      #s = <x> * s
+
+  function IsEmpty (restores s: Stack) : control
+    ensures
+      IsEmpty = (s = empty_string)
+
+  function IsFull (restores s: Stack) : control
+    ensures
+      IsFull = (|s| = MAX_DEPTH)
+
+  function Length (restores s: Stack) : Integer
+    ensures
+      Length = |s|
+
+end BoundedStackTemplate

@@ -1,0 +1,39 @@
+realization PartialMapRealization (function Function (restores i: DItem) : RItem
+                                     ensures
+                                       Function = F(i),
+                                   function Replica (restores r: RItem) : RItem
+                                     ensures
+                                       Replica = r,
+                                   function Replica (restores d: DItem) : DItem
+                                     ensures
+                                       Replica = d)
+  implements MemoizingMachineTemplate
+
+  uses PartialMapTemplate
+
+  facility PartialMapFacility is PartialMapTemplate(DItem, RItem)
+
+  type representation for MemoizingMachine is (items: PartialMap)
+    exemplar m
+    convention for all x: DItem
+                 (for all y: RItem
+                     where ((x, y) is in m.items)
+                   (y = F(x)))
+    correspondence function |m.items| >= 0
+  end MemoizingMachine
+
+  function Compute (restores m: MemoizingMachine,
+                    restores d: DItem) : RItem
+    variable dCopy: DItem
+    variable rCopy: RItem
+    if not IsDefined(m.items, d) then
+      dCopy := Replica(d)
+      Compute := Function(d)
+    else
+      Undefine(m.items, d, dCopy, Compute)
+    end if
+    rCopy := Replica(Compute)
+    Define(m.items, dCopy, rCopy)
+  end Compute
+
+end PartialMapRealization

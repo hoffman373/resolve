@@ -1,0 +1,32 @@
+contract FindMaxAndSum
+  enhances ArrayOfUnboundedIntegerAsStringFacility
+
+  definition SUM (s: string of integer)
+    : integer
+    satisfies if (s = empty_string) then
+                (SUM(s) = 0)
+              else
+                there exists x: integer,
+                             t: string of integer
+                  (s = <x> * t and
+                  SUM(s) = x + SUM(t))
+
+  definition IS_MAX_OF (s: string of integer,
+                        i: integer)
+    : boolean
+     is
+    i is in elements(s) and
+    for all j: integer
+        where (j is in elements(s))
+      (j <= i)
+
+  procedure FindMaxAndSum(restores a: ArrayOfInteger,
+                          replaces max: Integer,
+                          replaces sum: Integer)
+    requires
+      a.s /= empty_string
+    ensures
+      sum = SUM(a.s) and
+      IS_MAX_OF(a.s, max)
+
+end FindMaxAndSum

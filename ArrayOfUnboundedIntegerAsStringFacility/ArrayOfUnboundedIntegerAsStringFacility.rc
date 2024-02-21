@@ -1,0 +1,44 @@
+contract ArrayOfUnboundedIntegerAsStringFacility
+  uses UnboundedIntegerFacility
+
+  math subtype ARRAY_MODEL is (lb: integer,
+                               ub: integer,
+                               s: string of integer)
+    exemplar a
+    constraint a.lb <= a.ub + 1 and
+               |a.s| = a.ub - a.lb + 1
+
+  type ArrayOfInteger is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_string)
+
+  procedure SetBounds(updates a: ArrayOfInteger,
+                      restores lower: Integer,
+                      restores upper: Integer)
+    requires
+      lower <= upper
+    ensures
+      a.lb = lower and a.ub = upper
+
+  procedure SwapItem(updates a: ArrayOfInteger,
+                     restores i: Integer,
+                     updates x: Integer)
+    requires
+      a.lb <= i and i <= a.ub
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      substring(a.s, 0, i - a.lb) = substring(#a.s, 0, i - #a.lb) and
+      substring(a.s, i - a.lb + 1, |a.s|) = substring(#a.s, i - #a.lb + 1, |#a.s|) and
+      substring(a.s, i - a.lb, i - a.lb + 1) = <#x> and
+      substring(#a.s, i - #a.lb, i - #a.lb + 1) = <x>
+
+  function LowerBound (restores a: ArrayOfInteger) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: ArrayOfInteger) : Integer
+    ensures
+      UpperBound = a.ub
+
+end ArrayOfUnboundedIntegerAsStringFacility

@@ -1,0 +1,23 @@
+realization Obvious
+  implements Retreat for ListTemplatePartBetween
+
+  procedure Retreat (updates s: List)
+    variable len, place: Integer
+    len := LeftLength(s)
+    Decrement(len)
+    Reset(s)
+    confirm len < |s.list|
+    loop
+      maintains s.list = #s.list and
+                s.pos = place and
+                s.pos <= len and
+                len = #len
+      decreases len - place
+    while IsGreater(len, place) do
+      Advance(s)
+      Increment(place)
+      confirm place = s.pos
+    end loop
+  end Retreat
+
+end Obvious

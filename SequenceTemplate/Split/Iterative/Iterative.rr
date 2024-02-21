@@ -1,0 +1,23 @@
+realization Iterative
+  implements Split for SequenceTemplate
+
+  procedure Split (updates s1: Sequence,
+                   restores pos: Integer,
+                   replaces s2: Sequence)
+    variable lenS1: Integer
+    Clear(s2)
+    lenS1 := Length(s1)
+    loop
+      maintains s1 * s2 = #s1 * #s2 and |s1| >= pos and pos = #pos and
+                lenS1 = |s1|
+      decreases |s1|
+    while IsGreater(lenS1, pos) do
+      variable x: Item
+      variable zero: Integer
+      Decrement(lenS1)
+      Remove(s1, lenS1, x)
+      Add(s2, zero, x)
+    end loop
+  end Split
+
+end Iterative

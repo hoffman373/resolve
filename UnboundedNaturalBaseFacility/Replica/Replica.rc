@@ -1,0 +1,8 @@
+contract Replica
+  enhances UnboundedNaturalBaseFacility
+
+  function Replica (restores n: UnboundedNaturalBase) : UnboundedNaturalBase
+    ensures
+      Replica = n
+
+end Replica

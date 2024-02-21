@@ -1,0 +1,11 @@
+contract Add
+  enhances IntegerFacility
+
+  procedure Add(updates i: Integer,
+                restores j: Integer)
+    requires
+      MIN <= i + j and i + j <= MAX
+    ensures
+      i = #i + j
+
+end Add

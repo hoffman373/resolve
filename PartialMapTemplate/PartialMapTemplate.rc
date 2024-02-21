@@ -1,0 +1,80 @@
+contract PartialMapTemplate (type DItem,
+                             type RItem)
+  uses UnboundedIntegerFacility
+
+  definition IS_PARTIAL_FUNCTION (m: finite set of (d: DItem,
+                                                    r: RItem))
+    : boolean
+     is
+    for all d1,
+            d2: DItem,
+            r1,
+            r2: RItem
+        where ((d1, r1) is in m and (d2, r2) is in m)
+      (if d1 = d2 then
+        r1 = r2)
+
+  math subtype PARTIAL_MAP_MODEL is finite set of (d: DItem,
+                                                   r: RItem)
+    exemplar m
+    constraint IS_PARTIAL_FUNCTION(m)
+
+  definition IS_DEFINED_IN (m: PARTIAL_MAP_MODEL,
+                            d: DItem)
+    : boolean
+     is
+    there exists r: RItem
+      ((d, r) is in m)
+
+  // Lemma PartialDefinedInteraction:
+  //     FORALL S, d, r1, r2. Given IS_PARTIAL_FUNCTION(S) AND (d,r1) is in S
+  //         HAVE not IS_DEFINED_IN(S \ (d,r), d)
+  // Lemma PossiblyBetterPartialDefinedInteraction:
+  //     FORALL S, d, r1, r2. Given IS_PARTIAL_FUNCTION(S) AND IS_DEFINED(S,d)
+  //         HAVE not IS_DEFINED_IN(S \ (d,r), d)
+  type PartialMap is modeled by PARTIAL_MAP_MODEL
+    exemplar m
+    initialization ensures m = empty_set
+
+  procedure Define(updates m: PartialMap,
+                   clears d: DItem,
+                   clears r: RItem)
+    requires
+      not IS_DEFINED_IN(m, d)
+    ensures
+      m = #m union {(#d, #r)}
+
+  procedure Undefine(updates m: PartialMap,
+                     restores d: DItem,
+                     replaces dCopy: DItem,
+                     replaces r: RItem)
+    requires
+      IS_DEFINED_IN(m, d)
+    ensures
+      m = #m \ {(dCopy, r)} and
+      (dCopy, r) is in #m and
+      dCopy = d
+
+  procedure UndefineAny(updates m: PartialMap,
+                        replaces d: DItem,
+                        replaces r: RItem)
+    requires
+      m /= empty_set
+    ensures
+      (d, r) is in #m and
+      m = #m \ {(d, r)}
+
+  function IsDefined (restores m: PartialMap,
+                      restores d: DItem) : control
+    ensures
+      IsDefined = IS_DEFINED_IN(m, d)
+
+  function IsEmpty (restores m: PartialMap) : control
+    ensures
+      IsEmpty = (m = empty_set)
+
+  function Size (restores m: PartialMap) : Integer
+    ensures
+      Size = |m|
+
+end PartialMapTemplate

@@ -1,0 +1,14 @@
+realization Recursive
+  implements Reverse for QueueTemplate
+
+  procedure Reverse (updates q: Queue)
+    decreases |q|
+    if not IsEmpty(q) then
+      variable x: Item
+      Dequeue(q, x)
+      Reverse(q)
+      Enqueue(q, x)
+    end if
+  end Reverse
+
+end Recursive

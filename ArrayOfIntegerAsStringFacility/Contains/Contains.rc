@@ -1,0 +1,9 @@
+contract Contains
+  enhances ArrayOfIntegerAsStringFacility
+
+  function Contains (restores a: ArrayOfInteger,
+                     restores x: Integer) : control
+    ensures
+      Contains = x is in elements(a.s)
+
+end Contains

@@ -1,0 +1,35 @@
+realization ListRealization
+  implements StackTemplate
+
+  uses ListTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility ListFacility is ListTemplate(Item)
+
+  type representation for Stack is (itemlist: List)
+    exemplar s
+    convention s.itemlist.left = empty_string
+    correspondence function s.itemlist.right
+  end Stack
+
+  procedure Push (updates s: Stack,
+                  clears x: Item)
+    Insert(s.itemlist, x)
+  end Push
+
+  procedure Pop (updates s: Stack,
+                 replaces x: Item)
+    Remove(s.itemlist, x)
+  end Pop
+
+  function Length (restores s: Stack) : Integer
+    Length := RightLength(s.itemlist)
+  end Length
+
+  function IsEmpty (restores s: Stack) : control
+    variable len: Integer
+    len := RightLength(s.itemlist)
+    IsEmpty := not IsPositive(len)
+  end IsEmpty
+
+end ListRealization

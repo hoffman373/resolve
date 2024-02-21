@@ -1,0 +1,16 @@
+realization Recursive
+  implements Reverse for SequenceWithSubstringTemplate
+
+  procedure Reverse (updates s: Sequence)
+    decreases |s|
+    if not IsEmpty(s) then
+      variable x: Item
+      variable pos: Integer
+      Remove(s, pos, x)
+      Reverse(s)
+      pos := Length(s)
+      Add(s, pos, x)
+    end if
+  end Reverse
+
+end Recursive

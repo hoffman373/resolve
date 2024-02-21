@@ -1,0 +1,15 @@
+contract ReadQueue
+  enhances InputStreamTemplate
+
+  uses QueueTemplate
+
+  procedure ReadQueue(updates ins: InputStream,
+                      replaces q: Queue)
+    requires
+      ins.is_open
+    ensures
+      ins.is_open and
+      ins.items = empty_string and
+      q = #ins.items
+
+end ReadQueue

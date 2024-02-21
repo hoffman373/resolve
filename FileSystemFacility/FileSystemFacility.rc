@@ -1,0 +1,128 @@
+contract FileSystemFacility
+  uses TextFacility
+  uses FilePathFacility
+  uses BooleanFacility
+  uses SetTemplate
+
+  /*
+  An entry in the file system is a path and the content associated with it.
+  */
+  math subtype FILE_ENTRY is (isFolder: Boolean,
+                              content: Text)
+
+  /*
+  Math definition of a file system.
+  */
+  math subtype FILE_SYSTEM is finite partial function from FilePath to FILE_ENTRY
+    exemplar fs
+    constraint empty_string is in domain of fs and
+               for all fp: PATH
+                   where (fp is in domain of fs)
+                 (PARENT(fp) is in domain of fs and
+                 fs(PARENT(fp)).isFolder)
+
+  /*
+  Determines if a path is defined in a FileSystem.
+  */
+  definition IS_CHILD (parent: FilePath,
+                       child: FilePath)
+    : boolean
+     is
+    if |parent| = |child| - 1 then
+      (for all x: integer
+           where (x < |parent|)
+         (substring(parent, x, 1) = substring(child, x, 1)))
+    else
+      false
+
+  /*
+  A file system is modeled by a set a file entries.
+  */
+  type FileSystem is modeled by FILE_SYSTEM
+
+  /*
+  Determines if a file path is defined in a file system.
+  */
+  function ItemExists (restores path: FilePath,
+                       restores fs: FileSystem) : Boolean
+    ensures
+      ItemExists = path is in domain of fs
+
+  /*
+  Retrieves the children of a path.
+  How use set template?
+  */
+  procedure GetChildPaths(restores path: FilePath,
+                          restores fs: FileSystem,
+                          replaces children: Set)
+    requires
+      path is in domain of fs and
+      fs(path).isFolder
+    ensures
+      for all child: FilePath
+          where (child is in domain of fs)
+        (child is in children)
+
+  /*
+  Retrieves the content for a given path, if it can.
+  Otherwise it signals an error.
+  */
+  procedure GetFileContent(restores path: FilePath,
+                           restores fs: FileSystem,
+                           replaces body: Text,
+                           replaces error: Integer)
+    requires
+      path is in domain of fs and not fs(path).isFolder
+    ensures
+      if error = 0 then
+        fs(path) = body
+      else
+        |body| = 0
+
+  /*
+  Sets the content for a file, if it can. Otherwise it signals an error.
+  */
+  procedure SetFileContent(restores path: FilePath,
+                           updates fs: FileSystem,
+                           restores body: Text,
+                           replaces error: Integer)
+    requires
+      path is in domain of fs and not fs(path).isFolder
+    ensures
+      if error = 0 then
+        fs = #fs except at {path} and fs(path) = body
+
+  /*
+  Creates a new, empty file in a file system.
+  */
+  procedure CreateFile(restores path: FilePath,
+                       updates fs: FileSystem,
+                       replaces error: Integer)
+    requires
+      path is not in domain of fs and
+      PARENT(path) is in domain of fs
+    ensures
+      if error = 0 then
+        fs = #fs except at {path} and fs(path) = (false, empty_string)
+
+  procedure CreateFolder(restores path: FilePath,
+                         updates fs: FileSystem,
+                         replaces error: Integer)
+    requires
+      path is not in domain of fs and
+      PARENT(path) is in domain of fs
+    ensures
+      if error = 0 then
+        fs = #fs except at {path} and fs(path) = (true, empty_string)
+
+  procedure Remove(restores path: FilePath,
+                   updates fs: FileSystem,
+                   replaces error: Integer)
+    requires
+      path is in domain of fs and for all t: Text
+        (path * <t> is not in domain of fs)
+    ensures
+      if error = 0 then
+        fs = #fs except at {path} and path is not in domain of fs
+
+end FileSystemFacility

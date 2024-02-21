@@ -1,0 +1,26 @@
+realization Iterative
+  implements Reverse for QueueTemplate
+
+  uses StackTemplate
+
+  procedure Reverse (updates q: Queue)
+    variable s: Stack
+    loop
+      maintains reverse(#s) * #q = reverse(s) * q
+      decreases |q|
+    while not IsEmpty(q) do
+      variable x: Item
+      Dequeue(q, x)
+      Push(s, x)
+    end loop
+    loop
+      maintains #q * #s = q * s
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x: Item
+      Pop(s, x)
+      Enqueue(q, x)
+    end loop
+  end Reverse
+
+end Iterative

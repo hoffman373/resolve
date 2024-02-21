@@ -1,0 +1,16 @@
+realization Iterative
+  implements Concatenate for QueueTemplate
+
+  procedure Concatenate (updates p: Queue,
+                         clears q: Queue)
+    loop
+      maintains p * q = #p * #q
+      decreases |q|
+    while not IsEmpty(q) do
+      variable x: Item
+      Dequeue(q, x)
+      Enqueue(p, x)
+    end loop
+  end Concatenate
+
+end Iterative

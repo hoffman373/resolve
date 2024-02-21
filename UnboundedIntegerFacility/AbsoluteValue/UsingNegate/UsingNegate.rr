@@ -1,0 +1,13 @@
+realization UsingNegate
+  implements AbsoluteValue for UnboundedIntegerFacility
+
+  uses IsNegative for UnboundedIntegerFacility
+  uses Negate for UnboundedIntegerFacility
+
+  procedure AbsoluteValue (updates i: Integer)
+    if IsNegative(i) then
+      Negate(i)
+    end if
+  end AbsoluteValue
+
+end UsingNegate

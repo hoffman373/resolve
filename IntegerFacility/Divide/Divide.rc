@@ -1,0 +1,12 @@
+contract Divide
+  enhances IntegerFacility
+
+  procedure Divide(updates i: Integer,
+                   restores j: Integer,
+                   replaces r: Integer)
+    requires
+      j /= 0
+    ensures
+      #i = i * j + r and 0 <= r and r < |j|
+
+end Divide

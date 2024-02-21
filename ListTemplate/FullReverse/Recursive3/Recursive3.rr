@@ -1,0 +1,34 @@
+realization Recursive3
+  implements FullReverse for ListTemplate
+
+  procedure Reverse (updates s: List)
+    decreases (|s.right| + |s.left|)
+    variable len, zero: Integer
+    len := RightLength(s)
+    if IsGreater(len, zero) then
+      variable x: Item
+      Remove(s, x)
+      Reverse(s)
+      Insert(s, x)
+      Advance(s)
+    else
+      variable tmp: List
+      Reset(s)
+      len := RightLength(s)
+      loop
+        maintains len = |s.right| and zero = 0 and
+                  reverse(tmp.right) * s.right = reverse(#tmp.right) * #s.right and
+                  s.left = empty_string and
+                  tmp.left = empty_string
+        decreases |s.right|
+      while IsGreater(len, zero) do
+        variable x: Item
+        Remove(s, x)
+        Insert(tmp, x)
+        len := RightLength(s)
+      end loop
+      s :=: tmp
+    end if
+  end Reverse
+
+end Recursive3

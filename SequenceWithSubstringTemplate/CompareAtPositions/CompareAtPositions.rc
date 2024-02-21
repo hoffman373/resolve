@@ -1,0 +1,21 @@
+contract CompareAtPositions (definition ARE_IN_ORDER (x: Item,
+                                                      y: Item)
+                               : boolean
+                               satisfies true)
+  enhances SequenceWithSubstringTemplate
+
+  function CompareAtPositions (restores s: Sequence,
+                               restores x: Integer,
+                               restores y: Integer) : control
+    ensures
+      CompareAtPositions = 0 <= x and 0 <= y and
+      x < |s| and
+      y < |s| and
+      x /= y and
+      there exists a,
+                   b: Item
+        (<a> = substring(s, x, x + 1) and
+        <b> = substring(s, y, y + 1) and
+        ARE_IN_ORDER(a, b))
+
+end CompareAtPositions

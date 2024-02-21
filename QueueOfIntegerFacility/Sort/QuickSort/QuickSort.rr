@@ -1,0 +1,50 @@
+realization QuickSort
+  implements Sort for QueueOfIntegerFacility
+
+  uses Concatenate for QueueOfIntegerFacility
+
+  local procedure Partition(updates qSmall: Queue,
+                            replaces qBig: Queue,
+                            restores p: Integer)
+    ensures IsPermutation(qSmall * qBig, #qSmall) and
+            IsPreceding(<p>, qBig) and
+            IsPreceding(qSmall, <p>)
+    variable tmp: Queue
+    Clear(qBig)
+    loop
+      maintains IsPermutation(qSmall * qBig * tmp, #qSmall * #qBig * #tmp) and
+                IsPreceding(<p>, qBig) and
+                IsPreceding(tmp, <p>) and
+                p = #p
+      decreases |qSmall|
+    while not IsEmpty(qSmall) do
+      variable x: Integer
+      Dequeue(qSmall, x)
+      if not IsGreater(x, p) then
+        Enqueue(tmp, x)
+      else
+        Enqueue(qBig, x)
+      end if
+    end loop
+    qSmall :=: tmp
+  end Partition
+
+  procedure Sort (updates q: Queue)
+    decreases |q|
+    variable qLength, zero: Integer
+    qLength := Length(q)
+    if IsGreater(qLength, zero) then
+      variable partitionElement: Integer
+      variable qBig: Queue
+      Dequeue(q, partitionElement)
+      Partition(q, qBig, partitionElement)
+      Sort(q)
+      Sort(qBig)
+      confirm IsNonDecreasing(<partitionElement> * qBig)
+      Enqueue(q, partitionElement)
+      confirm IsNonDecreasing(q)
+      Concatenate(q, qBig)
+    end if
+  end Sort
+
+end QuickSort

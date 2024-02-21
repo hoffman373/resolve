@@ -1,0 +1,11 @@
+contract ConvertToArray
+  enhances SequenceWithSubstringTemplate
+
+  uses ArrayAsStringTemplate
+
+  procedure ConvertToArray(clears s1: Sequence,
+                           replaces s2: Array)
+    ensures
+      s2.s = #s1 and s2.lb = 0 and s2.ub = |#s1| - 1
+
+end ConvertToArray

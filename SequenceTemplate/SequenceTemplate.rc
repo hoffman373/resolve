@@ -1,0 +1,76 @@
+contract SequenceTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  definition DIFFER_BY_ONE (t1: string of Item,
+                            t2: string of Item,
+                            pos: integer,
+                            ch: Item)
+    : boolean
+     is
+    there exists a,
+                 b: string of Item
+      (t1 = a * b and t2 = a * <ch> * b and |a| = pos)
+
+  definition SAME_EXCEPT_AT (t1: string of Item,
+                             t2: string of Item,
+                             pos: integer,
+                             x: Item,
+                             y: Item)
+    : boolean
+     is
+    there exists a,
+                 b: string of Item
+      (t1 = a * <x> * b and t2 = a * <y> * b and |a| = pos)
+
+  type Sequence is modeled by string of Item
+    exemplar t
+    initialization ensures t = empty_string
+
+  procedure Add(updates t: Sequence,
+                restores pos: Integer,
+                clears x: Item)
+    requires
+      0 <= pos and pos <= |t|
+    ensures
+      // substring (#t, 0, pos) = substring (t, 0, pos)  and
+      // substring (#t, pos, |#t|) = substring (t, pos + 1, |t|)  and
+      // <#x> = substring (t, pos, pos + 1)
+      DIFFER_BY_ONE(#t, t, pos, #x)
+
+  procedure Remove(updates t: Sequence,
+                   restores pos: Integer,
+                   replaces x: Item)
+    requires
+      0 <= pos and pos < |t|
+    ensures
+      // substring (t, 0, pos) = substring (#t, 0, pos)  and
+      // substring (t, pos, |t|) = substring (#t, pos + 1, |#t|)  and
+      // <x> = substring (#t, pos, pos + 1)
+      DIFFER_BY_ONE(t, #t, pos, x)
+
+  procedure Swap(updates t: Sequence,
+                 restores pos: Integer,
+                 updates x: Item)
+    requires
+      0 <= pos and pos < |t|
+    ensures
+      // substring (#t, 0, pos) = substring (t, 0, pos)  and
+      // substring (#t, pos + 1, |#t|) = substring (t, pos + 1, |t|)  and
+      // <#x> = substring (t, pos, pos + 1)  and
+      // <x> = substring (#t, pos, pos + 1)
+      SAME_EXCEPT_AT(t, #t, pos, #x, x)
+
+  function Length (restores t: Sequence) : Integer
+    ensures
+      Length = |t|
+
+  function IsEmpty (restores t: Sequence) : control
+    ensures
+      IsEmpty = (t = empty_string)
+
+  function AreEqual (restores t1: Sequence,
+                     restores t2: Sequence) : control
+    ensures
+      AreEqual = (t1 = t2)
+
+end SequenceTemplate

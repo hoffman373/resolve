@@ -1,0 +1,8 @@
+contract Double
+  enhances UnboundedNaturalFacility
+
+  procedure Double(updates n: Natural)
+    ensures
+      n = #n + #n
+
+end Double

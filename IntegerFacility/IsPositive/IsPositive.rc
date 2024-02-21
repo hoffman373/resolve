@@ -1,0 +1,8 @@
+contract IsPositive
+  enhances IntegerFacility
+
+  function IsPositive (restores i: Integer) : control
+    ensures
+      IsPositive = (i > 0)
+
+end IsPositive

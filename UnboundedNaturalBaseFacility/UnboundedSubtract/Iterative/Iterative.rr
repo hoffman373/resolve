@@ -1,0 +1,21 @@
+realization Iterative
+  implements UnboundedSubtract for UnboundedNaturalBaseFacility
+
+  uses UnboundedIncrement for UnboundedNaturalBaseFacility
+  uses UnboundedDecrement for UnboundedNaturalBaseFacility
+
+  procedure Subtract (updates n: UnboundedNaturalBase,
+                      restores m: UnboundedNaturalBase)
+    variable p: UnboundedNaturalBase
+    loop
+      maintains n - m = #n - #m and m + p = #m + #p
+      decreases |m|
+    while not IsZero(m) do
+      Decrement(m)
+      Decrement(n)
+      Increment(p)
+    end loop
+    m :=: p
+  end Subtract
+
+end Iterative

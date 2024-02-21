@@ -1,0 +1,44 @@
+realization SelectionSort (function AreInOrder (restores i: Item,
+                                                restores j: Item) : control
+                             ensures
+                               AreInOrder = ARE_IN_ORDER(i, j))
+  implements Sort for QueueTemplate
+
+  local procedure RemoveMin(updates q: Queue,
+                            replaces min: Item)
+    requires q /= empty_string
+    ensures IS_PERMUTATION(q * <min>, #q) and
+            IS_PRECEDING(<min>, q)
+    variable tmp: Queue
+    Dequeue(q, min)
+    loop
+      maintains IS_PERMUTATION(tmp * q * <min>, #tmp * #q * <#min>) and
+                IS_PRECEDING(<min>, tmp)
+      decreases |q|
+    while not IsEmpty(q) do
+      variable x: Item
+      Dequeue(q, x)
+      if not AreInOrder(min, x) then
+        min :=: x
+      end if
+      Enqueue(tmp, x)
+    end loop
+    q :=: tmp
+  end RemoveMin
+
+  procedure Sort (updates q: Queue)
+    variable sorted: Queue
+    loop
+      maintains IS_PERMUTATION(q * sorted, #q * #sorted) and
+                IS_NON_DECREASING(sorted) and
+                IS_PRECEDING(sorted, q)
+      decreases |q|
+    while not IsEmpty(q) do
+      variable min: Item
+      RemoveMin(q, min)
+      Enqueue(sorted, min)
+    end loop
+    q :=: sorted
+  end Sort
+
+end SelectionSort

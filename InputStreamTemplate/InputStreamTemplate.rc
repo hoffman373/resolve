@@ -1,0 +1,39 @@
+contract InputStreamTemplate (type Item)
+  math subtype INPUT_STREAM_MODEL is (items: string of Item,
+                                      is_open: boolean)
+
+  type InputStream is modeled by INPUT_STREAM_MODEL
+    exemplar s
+    initialization ensures not s.is_open and
+                           s.items = empty_string
+
+  procedure Open(updates s: InputStream)
+    requires
+      not s.is_open
+    ensures
+      s.is_open
+
+  procedure Close(updates s: InputStream)
+    requires
+      s.is_open
+    ensures
+      not s.is_open
+
+  function Is_Open (restores s: InputStream) : control
+    ensures
+      Is_Open = s.is_open
+
+  function Is_Empty (restores s: InputStream) : control
+    ensures
+      Is_Empty = (s.items = empty_string)
+
+  procedure Get(updates s: InputStream,
+                replaces x: Item)
+    requires
+      s.is_open and
+      s.items /= empty_string
+    ensures
+      s.is_open and
+      #s.items = <x> * s.items
+
+end InputStreamTemplate

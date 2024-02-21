@@ -1,0 +1,56 @@
+realization Recursive
+  implements UnboundedMultiply for UnboundedNaturalBaseFacility
+
+  uses Multiply for NaturalFacility
+  uses Divide for NaturalFacility
+  uses UnboundedAdd for UnboundedNaturalBaseFacility
+
+  local procedure SmallMultiply(restores i: UnboundedNaturalBase,
+                                restores j: Natural,
+                                replaces p: UnboundedNaturalBase)
+    requires j < RADIX
+    ensures p = (i * j)
+    decreases i
+    variable z: Natural
+    if AreEqual(j, z) or IsZero(i) then
+      Clear(p)
+    else
+      variable d1, d2, d3, r: Natural
+      variable q: UnboundedNaturalBase
+      r := Radix(i)
+      DivideByRadix(i, d1)
+      confirm (0 < i) implies (i < i * RADIX)
+      SmallMultiply(i, j, p)
+      d2 := Replica(d1)
+      assume d2 * j < RADIX * RADIX
+      confirm d2 * j < j * RADIX
+      Multiply(d2, j)
+      confirm d2 < RADIX * RADIX
+      Divide(d2, r, d3)
+      confirm d2 * RADIX < RADIX * RADIX
+      MultiplyByRadix(p, z)
+      MultiplyByRadix(q, d2)
+      MultiplyByRadix(q, d3)
+      Add(p, q)
+      MultiplyByRadix(i, d1)
+    end if
+  end SmallMultiply
+
+  procedure Multiply (updates i: UnboundedNaturalBase,
+                      restores j: UnboundedNaturalBase)
+    decreases i
+    if IsZero(i) or IsZero(j) then
+      Clear(i)
+    else
+      variable p: UnboundedNaturalBase
+      variable d, z: Natural
+      DivideByRadix(i, d)
+      confirm (0 < i) implies (i < i * RADIX)
+      Multiply(i, j)
+      SmallMultiply(j, d, p)
+      MultiplyByRadix(i, z)
+      Add(i, p)
+    end if
+  end Multiply
+
+end Recursive

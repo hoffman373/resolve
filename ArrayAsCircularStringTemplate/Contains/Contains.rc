@@ -1,0 +1,9 @@
+contract Contains
+  enhances ArrayAsCircularStringTemplate
+
+  function Contains (restores a: Array,
+                     restores x: Item) : control
+    ensures
+      Contains = x is in elements(a.s)
+
+end Contains

@@ -1,0 +1,38 @@
+realization Iterative
+  implements FindMaxAndSum for ArrayOfUnboundedIntegerAsStringFacility
+
+  uses Add for UnboundedIntegerFacility
+  uses Get for ArrayOfUnboundedIntegerAsStringFacility
+
+  procedure FindMaxAndSum (restores a: ArrayOfInteger,
+                           replaces max: Integer,
+                           replaces sum: Integer)
+    variable count: Integer
+    variable hi: Integer
+    Clear(max)
+    Clear(sum)
+    count := LowerBound(a)
+    hi := UpperBound(a)
+    Get(a, count, max)
+    Get(a, count, sum)
+    Increment(count)
+    loop
+      maintains a = #a and
+                hi = a.ub and
+                a.lb <= count and
+                count <= hi + 1 and
+                sum = SUM(substring(a.s, 0, count - a.lb)) and
+                IS_MAX_OF(substring(a.s, 0, count - a.lb), max)
+      decreases a.ub - count + 1
+    while (not IsGreater(count, hi)) do
+      variable value: Integer
+      Get(a, count, value)
+      if (IsGreater(value, max)) then
+        max := Replica(value)
+      end if
+      Add(sum, value)
+      Increment(count)
+    end loop
+  end FindMaxAndSum
+
+end Iterative

@@ -1,0 +1,10 @@
+contract SlowSize
+  enhances QueueTemplate
+
+  uses UnboundedIntegerFacility
+
+  function SlowSize (restores q: Queue) : Integer
+    ensures
+      SlowSize = |q|
+
+end SlowSize

@@ -1,0 +1,8 @@
+contract Reverse
+  enhances QueueTemplate
+
+  procedure Reverse(updates q: Queue)
+    ensures
+      q = reverse(#q)
+
+end Reverse

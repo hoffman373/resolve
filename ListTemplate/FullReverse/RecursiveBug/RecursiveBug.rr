@@ -1,0 +1,53 @@
+realization RecursiveBug
+  implements FullReverse for ListTemplate
+
+  procedure Reverse (updates s: List)
+    decreases |s.right| * (|s.left| + 1)// ?
+    variable zero, len: Integer
+    len := LeftLength(s)
+    if not AreEqual(len, zero) then
+      variable l: List
+      Reset(s)
+      loop
+        maintains l.left * l.right * s.right = #l.left * #l.right * #s.right and
+                  s.left = empty_string and
+                  l.right = empty_string and
+                  len + |l.right| = #len + |#l.right|
+                  // zero is not maintained
+        decreases len
+      while IsGreater(len, zero) do
+        variable x: Item
+        Remove(s, x)
+        Insert(l, x)
+        AdvanceToEnd(l)
+        Decrement(len)
+      end loop
+      Reset(l)
+      len := RightLength(l)
+      Reverse(s)
+      loop
+        maintains l.left = empty_string and
+                  len = |l.right| and
+                  reverse(l.right) * s.right = reverse(#l.right) * #s.right and
+                  s.left = #s.left
+                  // zero is not maintained
+        decreases len
+      while IsGreater(len, zero) do
+        variable x: Item
+        Remove(l, x)
+        Insert(s, x)
+        Decrement(len)
+      end loop
+    else
+      len := RightLength(s)
+      if not AreEqual(len, zero) then
+        variable x: Item
+        Remove(s, x)
+        Reverse(s)
+        Insert(s, x)
+        Advance(s)
+      end if
+    end if
+  end Reverse
+
+end RecursiveBug

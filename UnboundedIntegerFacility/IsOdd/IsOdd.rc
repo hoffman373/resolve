@@ -1,0 +1,9 @@
+contract IsOdd
+  enhances UnboundedIntegerFacility
+
+  function IsOdd (restores i: Integer) : control
+    ensures
+      IsOdd = there exists k: integer
+        (i = k + k + 1)
+
+end IsOdd

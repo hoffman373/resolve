@@ -1,0 +1,9 @@
+contract Merge
+  enhances CircularListTemplate
+
+  procedure Merge(updates s: CircularList,
+                  clears t: CircularList)
+    ensures
+      s = #s * #t
+
+end Merge

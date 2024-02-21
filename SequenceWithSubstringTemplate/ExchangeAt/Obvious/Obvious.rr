@@ -1,0 +1,15 @@
+realization Obvious
+  implements ExchangeAt for SequenceWithSubstringTemplate
+
+  procedure ExchangeAt (updates s: Sequence,
+                        restores x: Integer,
+                        restores y: Integer)
+    if not AreEqual(x, y) then
+      variable a: Item // catalyst
+      Swap(s, x, a)
+      Swap(s, y, a)
+      Swap(s, x, a)
+    end if
+  end ExchangeAt
+
+end Obvious

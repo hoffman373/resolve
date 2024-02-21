@@ -1,0 +1,23 @@
+realization Iterative
+  implements Subtract for SetTemplate
+
+  procedure Subtract (updates s: Set,
+                      restores t: Set)
+    variable tmp: Set
+    loop
+      maintains s union tmp union t = #s union #tmp union t and
+                s intersection tmp = empty_set and
+                tmp intersection t = empty_set and
+                t = #t
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x: Item
+      RemoveAny(s, x)
+      if not Contains(t, x) then
+        Add(tmp, x)
+      end if
+    end loop
+    s :=: tmp
+  end Subtract
+
+end Iterative

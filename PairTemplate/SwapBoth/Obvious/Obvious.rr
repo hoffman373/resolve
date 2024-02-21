@@ -1,0 +1,11 @@
+realization Obvious
+  implements SwapBoth for PairTemplate
+
+  procedure SwapBoth (updates p: Pair,
+                      updates f: FirstItem,
+                      updates s: SecondItem)
+    SwapFirst(p, f)
+    SwapSecond(p, s)
+  end SwapBoth
+
+end Obvious

@@ -1,0 +1,8 @@
+contract AbsoluteValue
+  enhances UnboundedIntegerFacility
+
+  procedure AbsoluteValue(updates i: Integer)
+    ensures
+      i = |#i|
+
+end AbsoluteValue

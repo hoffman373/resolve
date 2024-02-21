@@ -1,0 +1,13 @@
+contract Get
+  enhances ArrayOfUnboundedIntegerAsStringFacility
+
+  procedure Get(restores a: ArrayOfInteger,
+                restores i: Integer,
+                replaces value: Integer)
+    requires
+      a.lb <= i and
+      i <= a.ub
+    ensures
+      substring(a.s, i - a.lb, i - a.lb + 1) = <value>
+
+end Get

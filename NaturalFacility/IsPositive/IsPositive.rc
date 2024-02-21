@@ -1,0 +1,8 @@
+contract IsPositive
+  enhances NaturalFacility
+
+  function IsPositive (restores n: Natural) : control
+    ensures
+      IsPositive = (n > 0)
+
+end IsPositive

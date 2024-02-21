@@ -1,0 +1,9 @@
+contract AreEqual
+  enhances UnboundedNaturalBaseFacility
+
+  function AreEqual (restores n: UnboundedNaturalBase,
+                     restores m: UnboundedNaturalBase) : control
+    ensures
+      AreEqual = n = m
+
+end AreEqual

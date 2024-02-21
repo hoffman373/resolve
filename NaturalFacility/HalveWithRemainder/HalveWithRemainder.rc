@@ -1,0 +1,10 @@
+contract HalveWithRemainder
+  enhances NaturalFacility
+
+  procedure HalveWithRemainder(updates n: Natural,
+                               replaces r: Natural)
+    ensures
+      #n = 2 * n + r and 0 <= r and r < 2
+      //#n = 2 * n + r and (r=0 or r=1) This makes a VC explosion
+
+end HalveWithRemainder

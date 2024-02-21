@@ -1,0 +1,27 @@
+realization Recursive
+  implements Sum for UnboundedIntegerFacility
+
+  function Sum (restores i: Integer,
+                restores j: Integer) : Integer
+  decreases |j|
+    variable z: Integer
+    if IsGreater(j, z) then
+      Increment(i)
+      Decrement(j)
+      Sum := Sum(i, j)
+      Decrement(i)
+      Increment(j)
+    else
+      if IsGreater(z, j) then
+        Decrement(i)
+        Increment(j)
+        Sum := Sum(i, j)
+        Increment(i)
+        Decrement(j)
+      else
+        Sum := Replica(i)
+      end if
+    end if
+  end Sum
+
+end Recursive

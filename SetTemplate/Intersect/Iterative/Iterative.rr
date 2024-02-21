@@ -1,0 +1,24 @@
+realization Iterative
+  implements Intersect for SetTemplate
+
+  procedure Intersect (updates s: Set,
+                       restores t: Set)
+    variable tmp: Set
+    loop
+      maintains (s union tmp) intersection t =
+                (#s union #tmp) intersection t and
+                s intersection tmp = empty_set and
+                tmp intersection t = tmp and
+                t = #t
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x: Item
+      RemoveAny(s, x)
+      if Contains(t, x) then
+        Add(tmp, x)
+      end if
+    end loop
+    s :=: tmp
+  end Intersect
+
+end Iterative

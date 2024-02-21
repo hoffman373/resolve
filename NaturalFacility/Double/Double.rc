@@ -1,0 +1,10 @@
+contract Double
+  enhances NaturalFacility
+
+  procedure Double(updates n: Natural)
+    requires
+      2 * n <= MAX
+    ensures
+      n = 2 * #n
+
+end Double

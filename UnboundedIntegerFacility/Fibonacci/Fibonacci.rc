@@ -1,0 +1,15 @@
+contract Fibonacci
+  enhances UnboundedIntegerFacility
+
+  definition FIB (i: integer)
+    : integer
+    satisfies 0//if i <= 1 then i else FIB(i-1) + FIB(n-2)
+
+  procedure Fibonacci(restores i: Integer,
+                      replaces j: Integer)
+    requires
+      i >= 0
+    ensures
+      j = FIB(i)
+
+end Fibonacci

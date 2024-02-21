@@ -1,0 +1,30 @@
+realization Recursive1
+  implements SwapSubstring for TextFacility
+
+  uses IsPositive for UnboundedIntegerFacility
+
+  procedure SwapSubstring (updates t1: Text,
+                           restores pos: Integer,
+                           restores len: Integer,
+                           updates t2: Text)
+    decreases |t2| + len
+    if IsEmpty(t2) then
+      if IsPositive(len) then
+        variable c: Character
+        variable z: Integer
+        Remove(t1, pos, c)
+        Decrement(len)
+        SwapSubstring(t1, pos, len, t2)
+        Increment(len)
+        Add(t2, z, c)
+      end if
+    else
+      variable c: Character
+      variable z: Integer
+      Remove(t2, z, c)
+      SwapSubstring(t1, pos, len, t2)
+      Add(t1, pos, c)
+    end if
+  end SwapSubstring
+
+end Recursive1

@@ -1,0 +1,19 @@
+contract Comparison
+  enhances UnboundedNaturalBaseFacility
+
+  function AreEqual (restores n: UnboundedNaturalBase,
+                     restores m: UnboundedNaturalBase) : control
+    ensures
+      AreEqual = n = m
+
+  function IsGreater (restores n: UnboundedNaturalBase,
+                      restores m: UnboundedNaturalBase) : control
+    ensures
+      IsGreater = n > m
+
+  function IsGreaterOrEqual (restores n: UnboundedNaturalBase,
+                             restores m: UnboundedNaturalBase) : control
+    ensures
+      IsGreaterOrEqual = n >= m
+
+end Comparison

@@ -1,0 +1,36 @@
+realization Recursive
+  implements UnboundedDivide for UnboundedNaturalBaseFacility
+
+  uses Comparison for UnboundedNaturalBaseFacility
+  uses UnboundedAdd for UnboundedNaturalBaseFacility
+  uses UnboundedSubtract for UnboundedNaturalBaseFacility
+
+  procedure Divide (updates i: UnboundedNaturalBase,
+                    restores j: UnboundedNaturalBase,
+                    replaces r: UnboundedNaturalBase)
+    decreases i
+    if IsGreater(i, j) or AreEqual(i, j) then
+      variable z, d: Natural
+      DivideByRadix(i, d)
+      confirm (0 < i) implies (i < i * RADIX)
+      Divide(i, j, r)
+      confirm r * RADIX + d < r * RADIX + RADIX
+      MultiplyByRadix(r, d)
+      confirm (r < j * RADIX)
+      loop
+        maintains #r + #d * #j = r + d * j and #j = j and
+                  d < RADIX and
+                  i = #i
+        decreases |r|
+      while IsGreater(r, j) or AreEqual(r, j) do
+        Subtract(r, j)
+        Increment(d)
+      end loop
+      MultiplyByRadix(i, d)
+    else
+      Clear(r)
+      r :=: i
+    end if
+  end Divide
+
+end Recursive

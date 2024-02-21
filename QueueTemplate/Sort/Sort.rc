@@ -1,0 +1,54 @@
+contract Sort (definition ARE_IN_ORDER (x: Item,
+                                        y: Item)
+                 : boolean
+                 satisfies restriction for all z: Item
+                                         ((ARE_IN_ORDER(x, y) or ARE_IN_ORDER(y, x)) and
+                                         (if (ARE_IN_ORDER(x, y) and ARE_IN_ORDER(y, z)) then
+                                            ARE_IN_ORDER(x, z))))
+  enhances QueueTemplate
+
+  definition OCCURS_COUNT (s: string of Item,
+                           i: Item)
+    : integer
+    satisfies if s = empty_string then
+                OCCURS_COUNT(s, i) = 0
+              else
+                there exists x: Item,
+                             r: string of Item
+                  ((s = <x> * r) and
+                  (if x = i then
+                     OCCURS_COUNT(s, i) = OCCURS_COUNT(r, i) + 1
+                   else
+                     OCCURS_COUNT(s, i) = OCCURS_COUNT(r, i)))
+
+  definition IS_PERMUTATION (s1: string of Item,
+                             s2: string of Item)
+    : boolean
+     is
+    for all i: Item
+      (OCCURS_COUNT(s1, i) = OCCURS_COUNT(s2, i))
+
+  definition IS_PRECEDING (s1: string of Item,
+                           s2: string of Item)
+    : boolean
+     is
+    for all i,
+            j: Item
+        where (OCCURS_COUNT(s1, i) > 0 and
+              OCCURS_COUNT(s2, j) > 0)
+      (ARE_IN_ORDER(i, j))
+
+  definition IS_NON_DECREASING (s: string of Item)
+    : boolean
+     is
+    for all a,
+            b: string of Item
+        where (s = a * b)
+      (IS_PRECEDING(a, b))
+
+  procedure Sort(updates q: Queue)
+    ensures
+      IS_PERMUTATION(q, #q) and
+      IS_NON_DECREASING(q)
+
+end Sort

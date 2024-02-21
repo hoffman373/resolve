@@ -1,0 +1,9 @@
+contract Multiply
+  enhances UnboundedNaturalFacility
+
+  procedure Multiply(updates n: Natural,
+                     restores m: Natural)
+    ensures
+      n = #n * m
+
+end Multiply

@@ -1,0 +1,50 @@
+contract SequenceWithSubstringTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  type Sequence is modeled by string of Item
+    exemplar t
+    initialization ensures t = empty_string
+
+  procedure Add(updates t: Sequence,
+                restores pos: Integer,
+                clears x: Item)
+    requires
+      0 <= pos and pos <= |t|
+    ensures
+      |t| = |#t| + 1 and
+      substring(t, 0, pos) = substring(#t, 0, pos) and
+      substring(t, pos, pos + 1) = <#x> and
+      substring(t, pos + 1, |t|) = substring(#t, pos, |#t|)
+
+  procedure Remove(updates t: Sequence,
+                   restores pos: Integer,
+                   replaces x: Item)
+    requires
+      0 <= pos and pos < |t|
+    ensures
+      |t| = |#t| - 1 and
+      substring(t, 0, pos) = substring(#t, 0, pos) and
+      substring(#t, pos, pos + 1) = <x> and
+      substring(t, pos, |t|) = substring(#t, pos + 1, |#t|)
+
+  procedure Swap(updates t: Sequence,
+                 restores pos: Integer,
+                 updates x: Item)
+    requires
+      0 <= pos and pos < |t|
+    ensures
+      |t| = |#t| and
+      substring(t, 0, pos) = substring(#t, 0, pos) and
+      substring(t, pos, pos + 1) = <#x> and
+      substring(#t, pos, pos + 1) = <x> and
+      substring(t, pos + 1, |t|) = substring(#t, pos + 1, |#t|)
+
+  function Length (restores t: Sequence) : Integer
+    ensures
+      Length = |t|
+
+  function IsEmpty (restores t: Sequence) : control
+    ensures
+      IsEmpty = (t = empty_string)
+
+end SequenceWithSubstringTemplate

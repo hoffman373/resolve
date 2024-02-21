@@ -1,0 +1,20 @@
+realization BuggyRecursive (procedure CopyTo(restores x: Item,
+                                             replaces xCopy: Item)
+                              ensures
+                                x = xCopy)
+  implements Copy for QueueTemplate
+
+  procedure Copy (restores p: Queue,
+                  replaces q: Queue)
+    decreases |p|
+    if not IsEmpty(p) then
+      variable x, xCopy: Item
+      Dequeue(p, x)
+      CopyTo(x, xCopy)
+      Enqueue(p, x)
+      Enqueue(q, xCopy)
+      Copy(p, q)
+    end if
+  end Copy
+
+end BuggyRecursive

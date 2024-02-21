@@ -1,0 +1,16 @@
+contract CompareItemWith (definition ARE_IN_ORDER (x: Item,
+                                                   y: Item)
+                            : boolean
+                            satisfies true)
+  enhances SequenceWithSubstringTemplate
+
+  function CompareItemWith (restores s: Sequence,
+                            restores a: Item,
+                            restores y: Integer) : control
+    ensures
+      CompareItemWith = 0 <= y and y < |s| and
+      there exists b: Item
+        (<b> = substring(s, y, y + 1) and
+        ARE_IN_ORDER(a, b))
+
+end CompareItemWith

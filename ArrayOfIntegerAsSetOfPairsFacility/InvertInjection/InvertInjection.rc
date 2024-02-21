@@ -1,0 +1,35 @@
+contract InvertInjection
+  enhances ArrayOfIntegerAsSetOfPairsFacility
+
+  definition VALUES_IN_BOUNDS (a: ARRAY_MODEL)
+    : boolean
+     is
+    IS_VALID_ARRAY(a.lb, a.ub, a.table) and
+    for all i,
+            x: integer
+        where ((i, x) is in a.table)
+      (a.lb <= x and x <= a.ub)
+
+  definition IS_INVERTED_UP_TO (c: integer,
+                                a: ARRAY_MODEL,
+                                b: ARRAY_MODEL)
+    : boolean
+     is
+    IS_VALID_ARRAY(a.lb, a.ub, a.table) and
+    IS_VALID_ARRAY(b.lb, b.ub, b.table) and
+    a.lb = b.lb and
+    a.ub = b.ub and
+    for all i,
+            x: integer
+        where ((i, x) is in a.table)
+      ((i < c and (x, i) is in b.table) or
+      (i >= c and (x, 0) is in b.table))
+
+  procedure InvertInjection(updates a: Array)
+    requires
+      VALUES_IN_BOUNDS(a)
+    ensures
+      a.lb = #a.lb and a.ub = #a.ub and
+      IS_INVERTED_UP_TO(a.ub + 1, #a, a)
+
+end InvertInjection

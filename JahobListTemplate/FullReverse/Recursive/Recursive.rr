@@ -1,0 +1,37 @@
+realization Recursive
+  implements FullReverse for JahobListTemplate
+
+  local procedure ReverseRight(updates s: List,
+                               updates l: List)
+    requires l.remaining = empty_string
+    ensures s.total = SUBSTRING(#s.total, 0, |#s.total| - |#s.remaining|) and
+            l.total = reverse(#s.remaining) and
+            s.remaining = empty_string and
+            l.remaining = reverse(#s.remaining)
+    variable zero, lenR: Integer
+    lenR := RemainingLength(s)
+    loop
+      maintains reverse(l.total) * s.remaining = reverse(#l.total) * #s.remaining and
+                s.total * reverse(l.remaining) * s.remaining = #s.total * reverse(#l.remaining) * #s.remaining and
+                l.total = l.remaining and
+                lenR = |s.remaining| and
+                zero = #zero
+      decreases |s.remaining|
+    while IsGreater(lenR, zero) do
+      variable x: Item
+      Remove(s, x)
+      Insert(l, x)
+      lenR := RemainingLength(s)
+    end loop
+  end ReverseRight
+
+  procedure Reverse (updates s: List)
+    variable listTemp: List
+    ReverseRight(s, listTemp)
+    Reset(s)
+    AdvanceToEnd(listTemp)
+    ReverseRight(s, listTemp)
+    listTemp :=: s
+  end Reverse
+
+end Recursive

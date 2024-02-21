@@ -1,0 +1,59 @@
+realization StackRealization
+  implements QueueTemplate
+
+  uses StackTemplate
+  uses Reverse for StackTemplate
+  uses Concatenate for StackTemplate
+  uses Add for UnboundedIntegerFacility
+
+  facility StackFacility is StackTemplate(Item)
+
+  type representation for Queue is (front: Stack, back: Stack)
+    exemplar q
+    convention |q.back| <= |q.front|
+    correspondence function q.front * reverse(q.back)
+  end Queue
+
+  local procedure FixThings(updates s1: Stack,
+                            updates s2: Stack)
+    ensures if |#s1| < |#s2| then
+              (s1 = #s1 * reverse(#s2) and s2 = empty_string)
+            else
+              (s1 = #s1 and s2 = #s2)
+    variable l1, l2: Integer
+    l1 := Length(s1)
+    l2 := Length(s2)
+    if IsGreater(l2, l1) then
+      Reverse(s2)
+      Concatenate(s1, s2)
+    end if
+  end FixThings
+
+  procedure Enqueue (updates q: Queue,
+                     clears x: Item)
+    Push(q.back, x)
+    FixThings(q.front, q.back)
+  end Enqueue
+
+  procedure Dequeue (updates q: Queue,
+                     replaces x: Item)
+    if IsEmpty(q.front) then
+      Concatenate(q.front, q.back)
+      Reverse(q.front)
+    end if
+    Pop(q.front, x)
+    FixThings(q.front, q.back)
+  end Dequeue
+
+  function Length (restores q: Queue) : Integer
+    variable len: Integer
+    Length := Length(q.front)
+    len := Length(q.back)
+    Add(Length, len)
+  end Length
+
+  function IsEmpty (restores q: Queue) : control
+    IsEmpty := IsEmpty(q.front) and IsEmpty(q.back)
+  end IsEmpty
+
+end StackRealization

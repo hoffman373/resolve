@@ -1,0 +1,8 @@
+contract SlowSize
+  enhances PartialMapTemplate
+
+  function SlowSize (restores m: PartialMap) : Integer
+    ensures
+      SlowSize = |m|
+
+end SlowSize

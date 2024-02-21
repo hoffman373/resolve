@@ -1,0 +1,38 @@
+realization Iterative (function keep (restores x: Item) : control
+                         ensures
+                           keep = x is in KEEP_SET)
+  implements Filter for SetTemplate
+
+  procedure Filter (updates s: Set,
+                    replaces t: Set)
+    adjunct variable oldS: MATHTYPE
+    variable tempSet: Set
+    adjunct oldS := s
+    Clear(t)
+    loop
+      maintains oldS = #oldS and
+                s union tempSet union t = #s union #tempSet union #t and
+                t intersection s = empty_set and
+                tempSet intersection s = empty_set and
+                tempSet intersection t = empty_set and
+                t intersection KEEP_SET = empty_set and
+                tempSet intersection KEEP_SET = tempSet and
+                tempSet union KEEP_SET = KEEP_SET
+                //                      tempSet is subset of KEEP_SET //(previous 2 lines are easier for SD to prove)
+      decreases |s|
+    while not IsEmpty(s) do
+      variable x: Item
+      RemoveAny(s, x)
+      if keep(x) then
+        Add(tempSet, x)
+      else
+        Add(t, x)
+      end if
+    end loop
+    s :=: tempSet
+    confirm t intersection KEEP_SET = empty_set
+    confirm t intersection oldS = t
+    confirm t union oldS = oldS
+  end Filter
+
+end Iterative

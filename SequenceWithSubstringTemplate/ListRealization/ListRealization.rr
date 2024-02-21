@@ -1,0 +1,111 @@
+realization ListRealization (function AreEqual (restores i: Item,
+                                                restores j: Item) : control
+                               ensures
+                                 AreEqual = (i = j))
+  implements SequenceWithSubstringTemplate
+
+  uses ListTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility ListFacility is ListTemplate(Item)
+
+  type representation for Sequence is (items: List)
+    exemplar t
+    correspondence function t.items.left * t.items.right
+  end Sequence
+
+  local procedure MoveToPosition(updates el: List,
+                                 restores pos: Integer)
+    requires pos >= 0 and
+             pos <= |el.left| + |el.right|
+    ensures |el.left| = pos and
+            el.left * el.right = #el.left * #el.right
+    variable llen: Integer
+    llen := LeftLength(el)
+    if IsGreater(llen, pos) then
+      Reset(el)
+      Clear(llen)
+    end if
+    loop
+      maintains el.left * el.right = #el.left * #el.right and
+                pos = #pos and
+                |el.left| = llen and
+                llen <= pos
+      decreases |el.right|
+    while IsGreater(pos, llen) do
+      Advance(el)
+      llen := LeftLength(el)
+    end loop
+  end MoveToPosition
+
+  procedure Add (updates t: Sequence,
+                 restores pos: Integer,
+                 clears x: Item)
+    MoveToPosition(t.items, pos)
+    Insert(t.items, x)
+  end Add
+
+  procedure Remove (updates t: Sequence,
+                    restores pos: Integer,
+                    replaces x: Item)
+    MoveToPosition(t.items, pos)
+    Remove(t.items, x)
+  end Remove
+
+  procedure Swap (updates t: Sequence,
+                  restores pos: Integer,
+                  updates x: Item)
+    variable y: Item
+    MoveToPosition(t.items, pos)
+    Remove(t.items, y)
+    x :=: y
+    Insert(t.items, y)
+  end Swap
+
+  function Length (restores t: Sequence) : Integer
+    Reset(t.items)
+    Length := RightLength(t.items)
+  end Length
+
+  function IsEmpty (restores t: Sequence) : control
+    variable zero, len: Integer
+    Reset(t.items)
+    len := RightLength(t.items)
+    IsEmpty := AreEqual(len, zero)
+  end IsEmpty
+
+  /*    function AreEqual (restores t1: Sequence, restores t2: Sequence): control
+  variable t1length, t2length, pos: Integer
+  Reset (t1.items)
+  Reset (t2.items)
+  t1length := RightLength (t1.items)
+  t2length := RightLength (t2.items)
+  AreEqual := AreEqual (t1length, t2length)
+  if AreEqual then
+  pos := Replica (t1length)
+
+  loop
+  maintains
+  t1.items.left * t1.items.right = #t1.items.left * #t1.items.right  and
+  t2.items.left * t2.items.right = #t2.items.left * #t2.items.right  and
+  // ( if AreEqual then t1.items.left = t2.items.left )  and
+  |t1.items.right| = pos  and
+  |t2.items.right| = pos  and
+  ( AreEqual iff t1.items.left = t2.items.left )
+  decreases
+  pos
+  while AreEqual and IsPositive (pos) do
+  variable x, y: Item
+  Remove (t1.items, x)
+  Remove (t2.items, y)
+  AreEqual := AreEqual (x, y)
+  Insert (t1.items, x)
+  Insert (t2.items, y)
+  Decrement (pos)
+  Advance (t1.items)
+  Advance (t2.items)
+  end loop
+  end if
+  end AreEqual
+  */
+end ListRealization

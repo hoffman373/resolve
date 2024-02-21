@@ -1,0 +1,15 @@
+realization Obvious
+  implements ExchangeAt for ArrayAsString2Template
+
+  procedure ExchangeAt (updates a: Array,
+                        restores i: Integer,
+                        restores j: Integer)
+    if not AreEqual(i, j) then
+      variable x: Item
+      SwapItem(a, i, x)
+      SwapItem(a, j, x)
+      SwapItem(a, i, x)
+    end if
+  end ExchangeAt
+
+end Obvious

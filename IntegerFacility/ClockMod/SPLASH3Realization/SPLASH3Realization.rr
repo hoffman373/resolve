@@ -1,0 +1,17 @@
+realization SPLASH3Realization
+  implements ClockMod for IntegerFacility
+
+  uses Remainder for IntegerFacility
+  uses IsNegative for IntegerFacility
+  uses Add for IntegerFacility
+
+  procedure ClockMod (updates a: Integer,
+                      restores b: Integer)
+    // Java: return ((a % b) < 0) ? ((a % b) + b) : (a % b);
+    Remainder(a, b)
+    if IsNegative(a) then
+      Add(a, b)
+    end if
+  end ClockMod
+
+end SPLASH3Realization

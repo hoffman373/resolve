@@ -1,0 +1,76 @@
+contract JahobListTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  definition SUBSTRING (s: string of Item,
+                        start: integer,
+                        len: integer)
+    : string of Item
+    satisfies if (start < 0) or (len < 0 or (start + len > |s|)) then
+                SUBSTRING(s, start, len) = empty_string
+              else
+                there exists a,
+                             b: string of Item
+                  (s = a * SUBSTRING(s, start, len) * b and
+                  |a| = start and
+                  |b| = |s| - (start + len))
+
+  definition ALL_BUT_FIRST (s: string of Item)
+    : string of Item
+     is
+    SUBSTRING(s, 1, |s| - 1)
+
+  definition FIRST (s: string of Item)
+    : Item
+    satisfies if |s| > 0 then
+                <FIRST(s)> = SUBSTRING(s, 0, 1)
+
+  math subtype LIST_MODEL is (total: string of Item,
+                              remaining: string of Item)
+
+  //        exemplar l
+  //        constraint
+  //            l.remaining is suffix of l.all
+  type List is modeled by LIST_MODEL
+    exemplar l
+    initialization ensures l.total = empty_string and l.remaining = empty_string
+
+  procedure Insert(updates s: List,
+                   clears x: Item)
+    ensures
+      s.total = SUBSTRING(#s.total, 0, |#s.total| - |#s.remaining|) * <#x> * #s.remaining and
+      s.remaining = (<#x> * #s.remaining)
+
+  procedure Remove(updates s: List,
+                   replaces x: Item)
+    requires
+      s.remaining /= empty_string
+    ensures
+      s.remaining = ALL_BUT_FIRST(#s.remaining) and
+      s.total = SUBSTRING(#s.total, 0, |#s.total| - |#s.remaining|) * SUBSTRING(#s.remaining, 1, |#s.remaining|) and
+      x = FIRST(#s.remaining)
+
+  procedure Advance(updates s: List)
+    requires
+      s.remaining /= empty_string
+    ensures
+      s.total = #s.total and s.remaining = SUBSTRING(#s.remaining, 1, |#s.remaining|)
+
+  procedure Reset(updates s: List)
+    ensures
+      s.total = #s.total and
+      s.remaining = s.total
+
+  procedure AdvanceToEnd(updates s: List)
+    ensures
+      s.total = #s.total and
+      s.remaining = empty_string
+
+  function TotalLength (restores s: List) : Integer
+    ensures
+      TotalLength = |s.total|
+
+  function RemainingLength (restores s: List) : Integer
+    ensures
+      RemainingLength = |s.remaining|
+
+end JahobListTemplate

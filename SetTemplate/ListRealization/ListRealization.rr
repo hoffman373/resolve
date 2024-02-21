@@ -1,0 +1,88 @@
+realization ListRealization (function AreEqual (restores i: Item,
+                                                restores j: Item) : control
+                               ensures
+                                 AreEqual = (i = j))
+  implements SetTemplate
+
+  uses ListTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility ListFacility is ListTemplate(Item)
+
+  type representation for Set is (items: List)
+    exemplar s
+    convention |s.items.right| = |elements(s.items.right)| and
+               |s.items.left| = 0
+    correspondence function elements(s.items.right)
+  end Set
+
+  local procedure LookForItem(updates s: List,
+                              restores x: Item,
+                              replaces y: Item)
+    requires |s.right| > 0 and
+             |s.left| = 0
+    ensures #s.right = s.left * <y> * s.right and
+            (if x is in elements(#s.right) then
+               x = y)
+    variable leftToCheck: Integer
+    Remove(s, y)
+    leftToCheck := RightLength(s)
+    loop
+      maintains #s.left * <#y> * #s.right = s.left * <y> * s.right and
+                x is not in elements(s.left) and
+                x = #x and
+                leftToCheck = |s.right|
+      decreases |s.right|
+    while IsPositive(leftToCheck) and not AreEqual(x, y) do
+      Insert(s, y)
+      Advance(s)
+      Remove(s, y)
+      leftToCheck := RightLength(s)
+    end loop
+  end LookForItem
+
+  procedure Add (updates s: Set,
+                 clears x: Item)
+    Insert(s.items, x)
+  end Add
+
+  procedure Remove (updates s: Set,
+                    restores x: Item,
+                    replaces xCopy: Item)
+    // adjunct variable origitems: string of Item
+    // adjunct origitems := s.items.right
+    LookForItem(s.items, x, xCopy)
+    Reset(s.items)
+    // confirm |s.items.right| = |origitems| - 1
+    // confirm x is not in elements (s.items.right)
+  end Remove
+
+  procedure RemoveAny (updates s: Set,
+                       replaces x: Item)
+    Remove(s.items, x)
+  end RemoveAny
+
+  function Contains (restores s: Set,
+                     restores x: Item) : control
+    variable rightLength: Integer
+    rightLength := RightLength(s.items)
+    if IsPositive(rightLength) then
+      variable y: Item
+      LookForItem(s.items, x, y)
+      Contains := AreEqual(x, y)
+      Insert(s.items, y)
+      Reset(s.items)
+    end if
+  end Contains
+
+  function IsEmpty (restores s: Set) : control
+    variable rl: Integer
+    rl := RightLength(s.items)
+    IsEmpty := not IsPositive(rl)
+  end IsEmpty
+
+  function Size (restores s: Set) : Integer
+    Size := RightLength(s.items)
+  end Size
+
+end ListRealization

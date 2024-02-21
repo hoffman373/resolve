@@ -1,0 +1,8 @@
+contract OthersSize
+  enhances PartitionedSetOfIntegersFacility
+
+  function OthersSize (restores p: PartitionedSetOfIntegers) : Integer
+    ensures
+      OthersSize = |p.others|
+
+end OthersSize

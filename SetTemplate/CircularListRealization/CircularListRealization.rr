@@ -1,0 +1,86 @@
+realization CircularListRealization (function AreEqual (restores i: Item,
+                                                        restores j: Item) : control
+                                       ensures
+                                         AreEqual = (i = j))
+  implements SetTemplate
+
+  uses CircularListTemplate
+  uses Merge for CircularListTemplate
+
+  facility CircularListFacility is CircularListTemplate(Item)
+
+  type representation for Set is (items: CircularList)
+    exemplar s
+    convention |s.items| = |elements(s.items)|
+    correspondence function elements(s.items)
+  end Set
+
+  local procedure LookForItem(updates s: CircularList,
+                              replaces t: CircularList,
+                              restores x: Item)
+    ensures #s = t * s and x is not in elements(t) and
+            (if x is in elements(#s) then
+               substring(s, 0, 1) = <x>)
+    decreases |s|
+    if IsEmpty(s) then
+      Clear(t)
+    else
+      variable y: Item
+      Remove(s, y)
+      if AreEqual(x, y) then
+        Insert(s, y)
+        Clear(t)
+      else
+        LookForItem(s, t, x)
+        Insert(t, y)
+      end if
+    end if
+  end LookForItem
+
+  procedure Add (updates s: Set,
+                 clears x: Item)
+    Insert(s.items, x)
+  end Add
+
+  procedure Remove (updates s: Set,
+                    restores x: Item,
+                    replaces xCopy: Item)
+    variable t: CircularList
+    // adjunct variable origitems: string of Item
+    // adjunct origitems := s.items
+    LookForItem(s.items, t, x)
+    Remove(s.items, xCopy)
+    Merge(s.items, t)
+    // confirm |s.items| = |origitems| - 1
+    // confirm x is not in elements (s.items)
+  end Remove
+
+  procedure RemoveAny (updates s: Set,
+                       replaces x: Item)
+    Remove(s.items, x)
+  end RemoveAny
+
+  function Contains (restores s: Set,
+                     restores x: Item) : control
+    if not IsEmpty(s.items) then
+      variable t: CircularList
+      LookForItem(s.items, t, x)
+      if not IsEmpty(s.items) then
+        variable y: Item
+        Remove(s.items, y)
+        Contains := AreEqual(x, y)
+        Insert(s.items, y)
+      end if
+      Merge(s.items, t)
+    end if
+  end Contains
+
+  function IsEmpty (restores s: Set) : control
+    IsEmpty := IsEmpty(s.items)
+  end IsEmpty
+
+  function Size (restores s: Set) : Integer
+    Size := Length(s.items)
+  end Size
+
+end CircularListRealization

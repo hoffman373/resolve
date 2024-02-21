@@ -1,0 +1,15 @@
+realization Obvious (function Replica (restores x: Item) : Item
+                       ensures
+                         Replica = x)
+  implements EntryAt for ArrayAsStringTemplate
+
+  procedure EntryAt (restores a: Array,
+                     restores i: Integer,
+                     replaces x: Item)
+    variable y: Item
+    SwapItem(a, i, y)
+    x := Replica(y)
+    SwapItem(a, i, y)
+  end EntryAt
+
+end Obvious

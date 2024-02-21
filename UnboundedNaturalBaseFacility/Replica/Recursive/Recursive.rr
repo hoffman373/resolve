@@ -1,0 +1,19 @@
+realization Recursive
+  implements Replica for UnboundedNaturalBaseFacility
+
+  function Replica (restores n: UnboundedNaturalBase) : UnboundedNaturalBase
+  decreases n
+    if IsZero(n) then
+      Clear(Replica)
+    else
+      variable digit, copy: Natural
+      DivideByRadix(n, digit)
+      copy := Replica(digit)
+      confirm ((0 < n) implies (n < (n * RADIX)))
+      Replica := Replica(n)
+      MultiplyByRadix(Replica, copy)
+      MultiplyByRadix(n, digit)
+    end if
+  end Replica
+
+end Recursive

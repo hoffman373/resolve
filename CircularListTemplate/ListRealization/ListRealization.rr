@@ -1,0 +1,46 @@
+realization ListRealization
+  implements CircularListTemplate
+
+  uses ListTemplate
+  uses IsPositive for UnboundedIntegerFacility
+
+  facility ListFacility is ListTemplate(Item)
+
+  type representation for CircularList is (itemlist: List)
+    exemplar l
+    correspondence function l.itemlist.left * l.itemlist.right
+  end CircularList
+
+  procedure Insert (updates s: CircularList,
+                    clears x: Item)
+    Reset(s.itemlist)
+    Insert(s.itemlist, x)
+  end Insert
+
+  procedure Remove (updates s: CircularList,
+                    replaces x: Item)
+    Reset(s.itemlist)
+    Remove(s.itemlist, x)
+  end Remove
+
+  procedure Advance (updates s: CircularList)
+    variable x: Item
+    Reset(s.itemlist)
+    Remove(s.itemlist, x)
+    AdvanceToEnd(s.itemlist)
+    Insert(s.itemlist, x)
+  end Advance
+
+  function Length (restores s: CircularList) : Integer
+    Reset(s.itemlist)
+    Length := RightLength(s.itemlist)
+  end Length
+
+  function IsEmpty (restores s: CircularList) : control
+    variable length: Integer
+    Reset(s.itemlist)
+    length := RightLength(s.itemlist)
+    IsEmpty := not IsPositive(length)
+  end IsEmpty
+
+end ListRealization

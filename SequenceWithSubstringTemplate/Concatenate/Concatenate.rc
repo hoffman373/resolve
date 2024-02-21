@@ -1,0 +1,9 @@
+contract Concatenate
+  enhances SequenceWithSubstringTemplate
+
+  procedure Concatenate(updates s1: Sequence,
+                        clears s2: Sequence)
+    ensures
+      s1 = #s1 * #s2
+
+end Concatenate

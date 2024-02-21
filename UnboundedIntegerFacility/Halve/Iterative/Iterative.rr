@@ -1,0 +1,32 @@
+realization Iterative
+  implements Halve for UnboundedIntegerFacility
+
+  procedure Halve (updates i: Integer)
+    variable i2, zero: Integer
+    i2 := Replica(i)
+    if IsGreater(i2, zero) then
+      loop
+        maintains #i + #i - i - i = #i2 - i2 and zero = #zero and
+                  i2 >= -1 and
+                  i >= 0
+        decreases i
+      while IsGreater(i2, zero) do
+        Decrement(i2)
+        Decrement(i2)
+        Decrement(i)
+      end loop
+    else
+      loop
+        maintains #i + #i - i - i = #i2 - i2 and zero = #zero and
+                  i2 <= 1 and
+                  i <= 0
+        decreases -i
+      while IsGreater(zero, i2) do
+        Increment(i2)
+        Increment(i2)
+        Increment(i)
+      end loop
+    end if
+  end Halve
+
+end Iterative

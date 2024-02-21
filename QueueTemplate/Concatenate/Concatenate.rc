@@ -1,0 +1,9 @@
+contract Concatenate
+  enhances QueueTemplate
+
+  procedure Concatenate(updates p: Queue,
+                        clears q: Queue)
+    ensures
+      p = #p * #q
+
+end Concatenate

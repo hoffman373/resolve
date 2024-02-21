@@ -1,0 +1,30 @@
+realization Iterative (function AreEqual (restores i: Item,
+                                          restores j: Item) : control
+                         ensures
+                           AreEqual = (i = j))
+  implements Contains for ArrayAsCircularStringTemplate
+
+  function Contains (restores a: Array,
+                     restores x: Item) : control
+    variable pos: Integer
+    variable ub: Integer
+    pos := LowerBound(a)
+    ub := UpperBound(a)
+    loop
+      maintains a = #a and
+                x = #x and
+                ub = #ub and
+                a.lb <= pos and
+                pos <= ub + 1 and
+                Contains = (x is in elements(substring(a.s, 0, pos - a.lb)))
+      decreases ub - pos + 1
+    while not Contains and not IsGreater(pos, ub) do
+      variable y: Item
+      SwapItem(a, pos, y)
+      Contains := AreEqual(x, y)
+      SwapItem(a, pos, y)
+      Increment(pos)
+    end loop
+  end Contains
+
+end Iterative

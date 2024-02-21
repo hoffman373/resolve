@@ -1,0 +1,43 @@
+contract SwapSubstring
+  enhances TextFacility
+
+  definition SUBSTRING (s: string of character,
+                        start: integer,
+                        finish: integer)
+    : string of character
+    satisfies if (start < 0) or (start > finish) or (finish > |s|) then
+                SUBSTRING(s, start, finish) = empty_string
+              else
+                there exists a,
+                             b: string of character
+                  (s = a * SUBSTRING(s, start, finish) * b and
+                  |a| = start and
+                  |b| = |s| - finish)
+
+  definition SUBSTRING_REPLACEMENT (s: string of character,
+                                    ss: string of character,
+                                    start: integer,
+                                    finish: integer)
+    : string of character
+    satisfies if (start < 0) or (start > finish) or (finish > |s|) then
+                SUBSTRING_REPLACEMENT(s, ss, start, finish) = s
+              else
+                there exists a,
+                             b,
+                             c: string of character
+                  (s = a * b * c and
+                  |a| = start and
+                  |c| = |s| - finish and
+                  SUBSTRING_REPLACEMENT(s, ss, start, finish) = a * ss * c)
+
+  procedure SwapSubstring(updates t1: Text,
+                          restores pos: Integer,
+                          restores len: Integer,
+                          updates t2: Text)
+    requires
+      0 <= pos and pos + len <= |t1| and len >= 0
+    ensures
+      t1 = SUBSTRING_REPLACEMENT(#t1, #t2, pos, pos + len) and
+      t2 = SUBSTRING(#t1, pos, pos + len)
+
+end SwapSubstring

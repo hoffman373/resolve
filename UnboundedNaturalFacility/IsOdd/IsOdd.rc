@@ -1,0 +1,23 @@
+contract IsOdd
+  enhances UnboundedNaturalFacility
+
+  definition IS_ODD (n: NATURALMODEL)
+    : boolean
+     is
+    there exists k: NATURALMODEL
+      (n = k + k + 1)
+
+  lemma ZERO_IS_NOT_ODD is not IS_ODD(0)
+
+  lemma ODD_EVEN is for all n: NATURALMODEL
+    (IS_ODD(n) iff not IS_ODD(n + 1))
+
+  lemma DOUBLE_IS_EVEN is for all n: NATURALMODEL
+    (not IS_ODD(n + n))
+
+  function IsOdd (restores n: Natural) : control
+    ensures
+      IsOdd = IS_ODD(n)
+      // IsOdd = there exists k: NATURALMODEL (n = k + k + 1)
+
+end IsOdd

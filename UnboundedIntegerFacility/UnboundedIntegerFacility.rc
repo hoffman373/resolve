@@ -1,0 +1,28 @@
+contract UnboundedIntegerFacility
+  type Integer is modeled by integer
+    exemplar i
+    initialization ensures i = 0
+
+  procedure Increment(updates i: Integer)
+    ensures
+      i = #i + 1
+
+  procedure Decrement(updates i: Integer)
+    ensures
+      i = #i - 1
+
+  function AreEqual (restores i: Integer,
+                     restores j: Integer) : control
+    ensures
+      AreEqual = (i = j)
+
+  function IsGreater (restores i: Integer,
+                      restores j: Integer) : control
+    ensures
+      IsGreater = (i > j)
+
+  function Replica (restores i: Integer) : Integer
+    ensures
+      Replica = i
+
+end UnboundedIntegerFacility

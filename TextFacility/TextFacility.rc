@@ -1,0 +1,56 @@
+contract TextFacility
+  uses CharacterFacility
+  uses UnboundedIntegerFacility
+
+  definition DIFFER_BY_ONE (t1: string of character,
+                            t2: string of character,
+                            pos: integer,
+                            ch: character)
+    : boolean
+     is
+    there exists a,
+                 b: string of character
+      (t1 = a * b and t2 = a * <ch> * b and |a| = pos)
+
+  type Text is modeled by string of character
+    exemplar t
+    initialization ensures t = empty_string
+
+  procedure Add(updates t: Text,
+                restores pos: Integer,
+                restores ch: Character)
+    requires
+      0 <= pos and pos <= |t|
+    ensures
+      DIFFER_BY_ONE(#t, t, pos, ch)
+      // there exists a, b: string of character
+      //     (#t = a * b  and  t = a * <ch> * b  and  |a| = pos)
+
+  procedure Remove(updates t: Text,
+                   restores pos: Integer,
+                   replaces ch: Character)
+    requires
+      0 <= pos and pos < |t|
+    ensures
+      DIFFER_BY_ONE(t, #t, pos, ch)
+      // there exists a, b: string of character
+      //     (#t = a * <ch> * b  and  t = a * b  and  |a| = pos)
+
+  function Length (restores t: Text) : Integer
+    ensures
+      Length = |t|
+
+  function IsEmpty (restores t: Text) : control
+    ensures
+      IsEmpty = (t = empty_string)
+
+  function AreEqual (restores t1: Text,
+                     restores t2: Text) : control
+    ensures
+      AreEqual = (t1 = t2)
+
+  function Replica (restores t: Text) : Text
+    ensures
+      Replica = t
+
+end TextFacility

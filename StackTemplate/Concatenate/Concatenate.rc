@@ -1,0 +1,9 @@
+contract Concatenate
+  enhances StackTemplate
+
+  procedure Concatenate(updates s1: Stack,
+                        clears s2: Stack)
+    ensures
+      s1 = #s1 * #s2
+
+end Concatenate

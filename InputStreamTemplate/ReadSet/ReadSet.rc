@@ -1,0 +1,15 @@
+contract ReadSet
+  enhances InputStreamTemplate
+
+  uses SetTemplate
+
+  procedure ReadSet(updates ins: InputStream,
+                    replaces s: Set)
+    requires
+      ins.is_open
+    ensures
+      ins.is_open and
+      ins.items = empty_string and
+      s = elements(#ins.items)
+
+end ReadSet

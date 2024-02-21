@@ -1,0 +1,24 @@
+realization UsingIterator
+  implements SlowSize for QueueTemplate
+
+  uses QueueIteratorTemplate
+
+  function SlowSize (restores q: Queue) : Integer
+    variable x: Item
+    variable i: QueueIterator
+    StartIterator(i, q, x)
+    loop
+      maintains i.past * i.future = #i.past * #i.future and
+                i.present = x and
+                i.original = #i.original and
+                i.deposit = #i.deposit and
+                SlowSize = |i.past|
+      decreases |i.future|
+    while not IsEmpty(i) do
+      GetNextItem(i, x)
+      Increment(SlowSize)
+    end loop
+    FinishIterator(i, q, x)
+  end SlowSize
+
+end UsingIterator

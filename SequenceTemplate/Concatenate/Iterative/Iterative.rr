@@ -1,0 +1,18 @@
+realization Iterative
+  implements Concatenate for SequenceTemplate
+
+  procedure Concatenate (updates s1: Sequence,
+                         clears s2: Sequence)
+    loop
+      maintains s1 * s2 = #s1 * #s2
+      decreases |s2|
+    while not IsEmpty(s2) do
+      variable x: Item
+      variable zero, lenS1: Integer
+      lenS1 := Length(s1)
+      Remove(s2, zero, x)
+      Add(s1, lenS1, x)
+    end loop
+  end Concatenate
+
+end Iterative

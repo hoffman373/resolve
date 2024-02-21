@@ -1,0 +1,19 @@
+realization ViaSubtraction
+  implements SizeOfDomain for UninitializedArrayTemplate
+
+  uses Add for UnboundedIntegerFacility
+  uses Subtract for UnboundedIntegerFacility
+
+  function SizeOfDomain (restores a: Array) : Integer
+    variable result: Integer
+    variable lb: Integer
+    variable one: Integer
+    result := UpperBound(a)
+    lb := LowerBound(a)
+    Subtract(result, lb)
+    Increment(one)
+    Add(result, one)
+    SizeOfDomain := Replica(result)
+  end SizeOfDomain
+
+end ViaSubtraction

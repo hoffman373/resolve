@@ -1,0 +1,9 @@
+realization Obvious
+  implements IsPositive for UnboundedIntegerFacility
+
+  function IsPositive (restores i: Integer) : control
+    variable zero: Integer
+    IsPositive := IsGreater(i, zero)
+  end IsPositive
+
+end Obvious

@@ -1,0 +1,9 @@
+contract Add
+  enhances UnboundedIntegerFacility
+
+  procedure Add(updates i: Integer,
+                restores j: Integer)
+    ensures
+      i = #i + j
+
+end Add

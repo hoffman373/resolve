@@ -1,0 +1,58 @@
+realization Iterative
+  implements Fibonacci for UnboundedIntegerFacility
+
+  uses ArrayOfUnboundedIntegerAsStringFacility
+  uses Get for ArrayOfUnboundedIntegerAsStringFacility
+  uses Add for UnboundedIntegerFacility
+  uses IsPositive for UnboundedIntegerFacility
+
+  local procedure SetupArray(updates a: ArrayOfInteger,
+                             restores i: Integer)
+    requires i >= 1
+    ensures a.lb = 0 and a.ub = i and
+            substring(a.s, a.lb, a.lb + 1) = <FIB(0)> and
+            substring(a.s, 1 + a.lb, 1 + (a.lb + 1)) = <FIB(1)>
+    variable zero, one: Integer
+    SetBounds(a, zero, i)
+    SwapItem(a, zero, one)// a[0] = 0
+    Clear(one)
+    Increment(one)
+    Increment(zero)
+    SwapItem(a, one, zero)// a[1] = 1
+  end SetupArray
+
+  procedure Fibonacci (restores i: Integer,
+                       replaces j: Integer)
+    if not IsPositive(i) then
+      Clear(j)
+    else
+      variable arr: ArrayOfInteger
+      variable n: Integer
+      SetupArray(arr, i)
+      Increment(n)
+      loop
+        maintains i = #i and arr.ub = #arr.ub and
+                  arr.lb = #arr.lb and
+                  n >= 1 and
+                  n <= i and
+                  for all m: integer
+                      where (arr.lb <= m and m <= n)
+                    (substring(arr.s, m, m + 1) = <FIB(m)>)
+        decreases i - n
+      while IsGreater(i, n) do
+        variable nMinusOne, nPlusOne, nMinusOneVal, nVal: Integer
+        nMinusOne := Replica(n)
+        Decrement(nMinusOne)
+        nPlusOne := Replica(n)
+        Increment(nPlusOne)
+        Get(arr, nMinusOne, nMinusOneVal)// n -2
+        Get(arr, n, nVal)// n - 1
+        Add(nVal, nMinusOneVal)
+        SwapItem(arr, nPlusOne, nVal)
+        Increment(n)
+      end loop
+      Get(arr, n, j)
+    end if
+  end Fibonacci
+
+end Iterative

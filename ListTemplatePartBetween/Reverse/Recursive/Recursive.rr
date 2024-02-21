@@ -1,0 +1,18 @@
+realization Recursive
+  implements Reverse for ListTemplatePartBetween
+
+  procedure Reverse (updates s: List)
+    decreases |s.list|
+    variable zero, len: Integer
+    len := RightLength(s)
+    if not AreEqual(len, zero) then
+      variable x: Item
+      Remove(s, x)
+      Reverse(s)
+      Insert(s, x)
+      // confirm s.pos = |s.list| - 1
+      Advance(s)
+    end if
+  end Reverse
+
+end Recursive

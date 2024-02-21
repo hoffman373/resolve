@@ -1,0 +1,15 @@
+contract MemoizingMachineTemplate (type DItem,
+                                   type RItem,
+                                   definition F (x: DItem)
+                                     : RItem
+                                     satisfies true)
+  type MemoizingMachine is modeled by boolean
+    exemplar m
+    initialization ensures m = true
+
+  function Compute (restores m: MemoizingMachine,
+                    restores d: DItem) : RItem
+    ensures
+      Compute = F(d)
+
+end MemoizingMachineTemplate

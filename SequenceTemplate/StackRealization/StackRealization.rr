@@ -1,0 +1,114 @@
+realization StackRealization (function AreEqual (restores i: Item,
+                                                 restores j: Item) : control
+                                ensures
+                                  AreEqual = (i = j))
+  implements SequenceTemplate
+
+  uses StackTemplate
+  uses IsPositive for UnboundedIntegerFacility
+  // uses Add for UnboundedIntegerFacility
+
+  facility StackFacility is StackTemplate(Item)
+
+  type representation for Sequence is (before: Stack, after: Stack)
+    exemplar t
+    correspondence function reverse(t.before) * t.after
+  end Sequence
+
+  local procedure SetLengthOfBefore(updates beforeStack: Stack,
+                                    updates afterStack: Stack,
+                                    restores pos: Integer)
+    requires 0 <= pos and pos <= |beforeStack| + |afterStack|
+    ensures reverse(beforeStack) * afterStack = reverse(#beforeStack) * #afterStack and
+            |beforeStack| = pos
+    variable bsLen: Integer
+    bsLen := Length(beforeStack)
+    loop
+      maintains reverse(beforeStack) * afterStack = reverse(#beforeStack) * #afterStack and
+                pos = #pos and
+                bsLen = |beforeStack|
+      decreases |beforeStack|
+    while IsGreater(bsLen, pos) do
+      variable x: Item
+      Pop(beforeStack, x)
+      Push(afterStack, x)
+      Decrement(bsLen)
+    end loop
+    loop
+      maintains reverse(beforeStack) * afterStack = reverse(#beforeStack) * #afterStack and
+                pos = #pos and
+                bsLen = |beforeStack| and
+                |beforeStack| <= pos
+      decreases |afterStack|
+    while IsGreater(pos, bsLen) do
+      variable x: Item
+      Pop(afterStack, x)
+      Push(beforeStack, x)
+      Increment(bsLen)
+    end loop
+  end SetLengthOfBefore
+
+  procedure Add (updates t: Sequence,
+                 restores pos: Integer,
+                 clears x: Item)
+    SetLengthOfBefore(t.before, t.after, pos)
+    Push(t.after, x)
+  end Add
+
+  procedure Remove (updates t: Sequence,
+                    restores pos: Integer,
+                    replaces x: Item)
+    SetLengthOfBefore(t.before, t.after, pos)
+    Pop(t.after, x)
+  end Remove
+
+  procedure Swap (updates t: Sequence,
+                  restores pos: Integer,
+                  updates x: Item)
+    variable y: Item
+    SetLengthOfBefore(t.before, t.after, pos)
+    Pop(t.after, y)
+    x :=: y
+    Push(t.after, y)
+  end Swap
+
+  function Length (restores t: Sequence) : Integer
+    variable zero: Integer
+    SetLengthOfBefore(t.before, t.after, zero)
+    Length := Length(t.after)
+  end Length
+
+  function IsEmpty (restores t: Sequence) : control
+    IsEmpty := IsEmpty(t.before) and IsEmpty(t.after)
+  end IsEmpty
+
+  function AreEqual (restores t1: Sequence,
+                     restores t2: Sequence) : control
+    variable t1length, t2length, pos: Integer
+    SetLengthOfBefore(t1.before, t1.after, pos)
+    SetLengthOfBefore(t2.before, t2.after, pos)
+    t1length := Length(t1.after)
+    t2length := Length(t2.after)
+    AreEqual := AreEqual(t1length, t2length)
+    if AreEqual then
+      pos := Replica(t1length)
+      loop
+        maintains reverse(t1.before) * t1.after = reverse(#t1.before) * #t1.after and
+                  reverse(t2.before) * t2.after = reverse(#t2.before) * #t2.after and
+                  |t1.after| = pos and
+                  |t2.after| = pos and
+                  (AreEqual iff t1.before = t2.before)
+        decreases pos
+      while AreEqual and IsPositive(pos) do
+        variable x, y: Item
+        Pop(t1.after, x)
+        Pop(t2.after, y)
+        AreEqual := AreEqual(x, y)
+        Push(t1.before, x)
+        Push(t2.before, y)
+        Decrement(pos)
+      end loop
+    end if
+  end AreEqual
+
+end StackRealization

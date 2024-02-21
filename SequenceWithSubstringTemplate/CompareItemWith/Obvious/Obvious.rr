@@ -1,0 +1,22 @@
+realization Obvious (function AreInOrder (restores x: Item,
+                                          restores y: Item) : control
+                       ensures
+                         AreInOrder = ARE_IN_ORDER(x, y))
+  implements CompareItemWith for SequenceWithSubstringTemplate
+
+  uses IsNegative for UnboundedIntegerFacility
+
+  function CompareItemWith (restores s: Sequence,
+                            restores a: Item,
+                            restores y: Integer) : control
+    variable len: Integer
+    len := Length(s)
+    if IsGreater(len, y) and not IsNegative(y) then
+      variable b: Item
+      Swap(s, y, b)
+      CompareItemWith := AreInOrder(a, b)
+      Swap(s, y, b)
+    end if
+  end CompareItemWith
+
+end Obvious

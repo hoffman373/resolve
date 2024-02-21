@@ -1,0 +1,28 @@
+realization Egyptian
+  implements Multiply for UnboundedNaturalFacility
+
+  uses IsOdd for UnboundedNaturalFacility
+  uses IsPositive for UnboundedNaturalFacility
+  uses Double for UnboundedNaturalFacility
+  uses Halve for UnboundedNaturalFacility
+  uses Add for UnboundedNaturalFacility
+
+  procedure Multiply (updates n: Natural,
+                      restores m: Natural)
+    variable b, p: Natural
+    b := Replica(m)
+    loop
+      maintains #n * #m = n * m + p and m >= 0 and b = #b
+      decreases m
+    while IsPositive(m) do
+      if IsOdd(m) then
+        Add(p, n)
+      end if
+      Double(n)
+      Halve(m)
+    end loop
+    n :=: p
+    m :=: b
+  end Multiply
+
+end Egyptian

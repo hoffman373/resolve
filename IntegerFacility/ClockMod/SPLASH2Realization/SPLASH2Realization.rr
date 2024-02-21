@@ -1,0 +1,19 @@
+realization SPLASH2Realization
+  implements ClockMod for IntegerFacility
+
+  uses Remainder for IntegerFacility
+  uses IsNegative for IntegerFacility
+  uses Add for IntegerFacility
+
+  procedure ClockMod (updates a: Integer,
+                      restores b: Integer)
+    // Java: return (a < 0) ? ((a % b) + b) : (a % b);
+    if IsNegative(a) then
+      Remainder(a, b)
+      Add(a, b)
+    else
+      Remainder(a, b)
+    end if
+  end ClockMod
+
+end SPLASH2Realization

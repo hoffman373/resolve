@@ -1,0 +1,30 @@
+realization Iterative
+  implements QuantityInitialized for UninitializedArrayTemplate
+
+  definition INTERVAL (lo: integer,
+                       hi: integer)
+    : finite set of integer
+    satisfies for all i: integer
+                (i is in INTERVAL(lo, hi) iff (lo <= i and i <= hi))
+
+
+  function QuantityInitialized (restores a: Array) : Integer
+    variable currentIndex: Integer
+    variable lastIndex: Integer
+    currentIndex := LowerBound(a)
+    lastIndex := UpperBound(a)
+    loop
+      maintains a = #a and
+                lastIndex = #lastIndex and
+                |a.initialized| = QuantityInitialized +
+                |INTERVAL(currentIndex, lastIndex) intersection a.initialized|
+      decreases |lastIndex + 1 - currentIndex|
+    while (not IsGreater(currentIndex, lastIndex)) do
+      if IsInitializedAt(a, currentIndex) then
+        Increment(QuantityInitialized)
+      end if
+      Increment(currentIndex)
+    end loop
+  end QuantityInitialized
+
+end Iterative

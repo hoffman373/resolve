@@ -1,0 +1,15 @@
+realization Weird
+  implements ExtensionToShowRepBug for Z2Facility
+
+  procedure SetEqual (updates n: Z2,
+                      updates m: Z2)
+    n := C0()
+    m := C1()
+    n := A(n)
+    m := A(m)
+    confirm n = m
+    B(n)
+    B(m)
+  end SetEqual
+
+end Weird

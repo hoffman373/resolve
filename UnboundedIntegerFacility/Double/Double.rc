@@ -1,0 +1,8 @@
+contract Double
+  enhances UnboundedIntegerFacility
+
+  procedure Double(updates i: Integer)
+    ensures
+      i = #i + #i
+
+end Double

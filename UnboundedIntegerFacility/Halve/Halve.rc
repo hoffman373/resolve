@@ -1,0 +1,12 @@
+contract Halve
+  enhances UnboundedIntegerFacility
+
+  procedure Halve(updates i: Integer)
+    ensures
+      #i = i + i or
+      (if #i > 0 then
+         #i = i + i + 1
+       else
+         #i = i + i - 1)
+
+end Halve

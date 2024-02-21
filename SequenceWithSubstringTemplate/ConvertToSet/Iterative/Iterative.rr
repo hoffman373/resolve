@@ -1,0 +1,20 @@
+realization Iterative
+  implements ConvertToSet for SequenceWithSubstringTemplate
+
+  procedure ConvertToSet (clears s1: Sequence,
+                          replaces s2: Set)
+    Clear(s2)
+    loop
+      maintains elements(s1) union s2 = elements(#s1) union #s2
+      decreases |s1|
+    while not IsEmpty(s1) do
+      variable x: Item
+      variable zero: Integer
+      Remove(s1, zero, x)
+      if not Contains(s2, x) then
+        Add(s2, x)
+      end if
+    end loop
+  end ConvertToSet
+
+end Iterative

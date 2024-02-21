@@ -1,0 +1,10 @@
+contract Reverse
+  enhances ListTemplatePartBetween
+
+  procedure Reverse(updates s: List)
+    requires
+      s.pos = 0
+    ensures
+      s.list = reverse(#s.list) and s.pos = |s.list|
+
+end Reverse

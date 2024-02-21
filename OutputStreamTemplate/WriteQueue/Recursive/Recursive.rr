@@ -1,0 +1,15 @@
+realization Recursive
+  implements WriteQueue for OutputStreamTemplate
+
+  procedure WriteQueue (updates out: OutputStream,
+                        clears q: Queue)
+    decreases |q|
+    if not IsEmpty(q) then
+      variable x: Item
+      Dequeue(q, x)
+      Put(out, x)
+      WriteQueue(out, q)
+    end if
+  end WriteQueue
+
+end Recursive

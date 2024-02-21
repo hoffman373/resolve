@@ -1,0 +1,35 @@
+realization Z4Realization
+  implements Z2Facility
+
+  uses Z4Facility
+  //    uses Mod for UnboundedIntegerFacility
+
+  type representation for Z2 is (value: Z4)
+    exemplar i
+    correspondence function ((i.value) mod 2)
+  end Z2
+
+  function C0 () : Z2
+    C0.value := Zero()
+  end C0
+
+  function C1 () : Z2
+    C1.value := One()
+  end C1
+
+  function A (restores i: Z2) : Z2
+    A.value := Double(i.value)
+  end A
+
+  procedure B (updates i: Z2)
+    i.value := Half(i.value)
+  end B
+  //    function GetValue (restores i: Z2): Integer
+  //        variable two : Integer
+  //        Increment(two)
+  //        Increment(two)
+  //        GetValue := GetValue(i.value)
+  //        Mod(GetValue, two)
+  //    end GetValue
+
+end Z4Realization

@@ -1,0 +1,25 @@
+realization Iterative
+  implements Halve for CircularListTemplate
+
+  procedure Halve (updates s: CircularList,
+                   replaces t: CircularList)
+    variable lenS, lenT: Integer
+    Clear(t)
+    lenS := Length(s)
+    lenT := Length(t)
+    loop
+      maintains t * s = #t * #s and lenT = |t| and
+                lenS = |s| and
+                |t| <= |s| + 1
+      decreases |s|
+    while IsGreater(lenS, lenT) do
+      variable x: Item
+      Decrement(lenS)
+      Increment(lenT)
+      Remove(s, x)
+      Insert(t, x)
+      Advance(t)
+    end loop
+  end Halve
+
+end Iterative

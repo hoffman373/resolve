@@ -1,0 +1,47 @@
+contract FileUtils
+  uses FileSystemFacility
+  uses FilePathFacility
+  uses TextFacility
+
+  procedure CopyFile(restores srcPath: FilePath,
+                     restores dstPath: FilePath,
+                     updates fs: FileSystem,
+                     replaces error: Integer)
+    requires
+      srcPath.isFile and
+      PATH_EXISTS(fs, srcPath) and
+      not PATH_EXISTS(fs, dstPath) and
+      dstPath.isFile
+    ensures
+      if error = 0 then
+      //(there exists body: Text
+      //   ((srcPath, body) is in #fs and
+      //   fs = #fs union {(dstPath, body)}))
+        (for all body: Text
+             where ((srcPath, body) is in #fs)
+           (fs = #fs union {(dstPath, body)}))
+
+  //fs = #fs
+  //(error /= 0 and fs = #fs) or
+  //(error = 0 and (there exists body: Text
+  //                ((srcPath, body) is in #fs and
+  //               fs = #fs union {(dstPath, body)})))
+  procedure MoveFile(restores srcPath: FilePath,
+                     restores dstPath: FilePath,
+                     updates fs: FileSystem,
+                     replaces error: Integer)
+    requires
+      srcPath.isFile and
+      PATH_EXISTS(fs, srcPath) and
+      not PATH_EXISTS(fs, dstPath) and
+      dstPath.isFile
+    ensures
+      if error = 0 then
+      //(there exists body: Text
+      //   ((srcPath, body) is in #fs and
+      //   fs = (#fs union {(dstPath, body)}) \ {(srcPath, body)}))
+        (for all body: Text
+             where ((srcPath, body) is in #fs)
+           (fs = (#fs union {(dstPath, body)}) \ {(srcPath, body)}))
+
+end FileUtils

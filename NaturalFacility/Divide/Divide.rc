@@ -1,0 +1,10 @@
+contract Divide
+  enhances NaturalFacility
+
+  procedure Divide(updates n: Natural,
+                   restores m: Natural,
+                   replaces r: Natural)
+    ensures
+      #n = n * m + r and 0 <= r and r < m
+
+end Divide

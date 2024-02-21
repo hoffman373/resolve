@@ -1,0 +1,9 @@
+contract Copy
+  enhances QueueTemplate
+
+  procedure Copy(restores p: Queue,
+                 replaces q: Queue)
+    ensures
+      p = q
+
+end Copy

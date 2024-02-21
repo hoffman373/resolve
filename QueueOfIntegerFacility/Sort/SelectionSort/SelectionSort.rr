@@ -1,0 +1,41 @@
+realization SelectionSort
+  implements Sort for QueueOfIntegerFacility
+
+  local procedure RemoveMin(updates q: Queue,
+                            replaces min: Integer)
+    requires q /= empty_string
+    ensures IsPermutation(q * <min>, #q) and
+            IsPreceding(<min>, q)
+    variable tmp: Queue
+    Dequeue(q, min)
+    loop
+      maintains IsPermutation(tmp * q * <min>, #tmp * #q * <#min>) and
+                IsPreceding(<min>, tmp)
+      decreases |q|
+    while not IsEmpty(q) do
+      variable x: Integer
+      Dequeue(q, x)
+      if IsGreater(min, x) then
+        min :=: x
+      end if
+      Enqueue(tmp, x)
+    end loop
+    q :=: tmp
+  end RemoveMin
+
+  procedure Sort (updates q: Queue)
+    variable sorted: Queue
+    loop
+      maintains IsPermutation(q * sorted, #q * #sorted) and
+                IsNonDecreasing(sorted) and
+                IsPreceding(sorted, q)
+      decreases |q|
+    while not IsEmpty(q) do
+      variable min: Integer
+      RemoveMin(q, min)
+      Enqueue(sorted, min)
+    end loop
+    q :=: sorted
+  end Sort
+
+end SelectionSort

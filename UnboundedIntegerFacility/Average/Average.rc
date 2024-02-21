@@ -1,0 +1,9 @@
+contract Average
+  enhances UnboundedIntegerFacility
+
+  procedure Average(updates i: Integer,
+                    restores j: Integer)
+    ensures
+      i + i <= #i + j and #i + j <= i + i + 1
+
+end Average

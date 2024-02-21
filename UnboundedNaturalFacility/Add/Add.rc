@@ -1,0 +1,9 @@
+contract Add
+  enhances UnboundedNaturalFacility
+
+  procedure Add(updates n: Natural,
+                restores m: Natural)
+    ensures
+      n = #n + m
+
+end Add

@@ -1,0 +1,13 @@
+contract CharacterFacility
+  type Character is modeled by character
+
+  function AreEqual (restores c1: Character,
+                     restores c2: Character) : control
+    ensures
+      AreEqual = (c1 = c2)
+
+  function Replica (restores c: Character) : Character
+    ensures
+      Replica = c
+
+end CharacterFacility

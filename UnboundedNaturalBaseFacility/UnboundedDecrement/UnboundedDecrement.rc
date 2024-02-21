@@ -1,0 +1,10 @@
+contract UnboundedDecrement
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Decrement(updates n: UnboundedNaturalBase)
+    requires
+      n > 0
+    ensures
+      n = #n - 1
+
+end UnboundedDecrement

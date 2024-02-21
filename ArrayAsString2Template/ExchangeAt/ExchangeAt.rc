@@ -1,0 +1,18 @@
+contract ExchangeAt
+  enhances ArrayAsString2Template
+
+  procedure ExchangeAt(updates a: Array,
+                       restores i: Integer,
+                       restores j: Integer)
+    requires
+      a.lb <= i and i <= a.ub and
+      a.lb <= j and
+      j <= a.ub
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      DIFFER_ONLY_AT(a.s, #a.s, {i - a.lb, j - a.lb}) and
+      substring(a.s, i - a.lb, i + 1 - a.lb) = substring(#a.s, j - #a.lb, j + 1 - #a.lb) and
+      substring(a.s, j - a.lb, j + 1 - a.lb) = substring(#a.s, i - #a.lb, i + 1 - #a.lb)
+
+end ExchangeAt

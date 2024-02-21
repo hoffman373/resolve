@@ -1,0 +1,52 @@
+contract UnboundedNaturalBaseFacility
+  uses NaturalFacility
+
+  math subtype UNBOUNDEDNATURALMODEL is integer
+    exemplar n
+    constraint n >= 0
+
+  //assume (m*RADIX+md = n*RADIX+nd) iff (m = n and md = nd)
+  //assume (m*RADIX+md > n*RADIX+nd) iff (m > n or (m = n and md > nd))
+  //confirm ((0 < n) implies (n < (n*RADIX)))
+  //assume (0 <= (mdigit+ndigit)) and (mdigit+ndigit) < (RADIX*RADIX)
+  //assume (mdigit+RADIX) < (2*RADIX)
+  //the product of 2 digits is a digit
+  //assume (0 <= (mdigit*ndigit)) and (mdigit*ndigit) < (RADIX*RADIX)
+  //assume d2*j < RADIX*RADIX
+  //==> When divide by RADIX the product of two digits, the result is a pair
+  //of digits
+  //confirm d2*RADIX < RADIX*RADIX
+  //combine this two for divide
+  //confirm r*RADIX+d < r*RADIX+RADIX    confirm (r < j*RADIX)
+  //Missing some for DIVIDE
+  definition RADIX
+    : integer
+    satisfies restriction 2 <= RADIX and RADIX * RADIX < MAX//and RADIX=10
+
+  type UnboundedNaturalBase is modeled by UNBOUNDEDNATURALMODEL
+    exemplar n
+    initialization ensures n = 0
+
+  procedure MultiplyByRadix(updates n: UnboundedNaturalBase,
+                            clears k: Natural)
+    requires
+      0 <= k and k < RADIX
+    ensures
+      n = #n * RADIX + #k
+
+  procedure DivideByRadix(updates n: UnboundedNaturalBase,
+                          replaces k: Natural)
+    ensures
+      #n = n * RADIX + k and
+      0 <= k and
+      k < RADIX
+
+  function Radix (restores n: UnboundedNaturalBase) : Natural
+    ensures
+      Radix = RADIX
+
+  function IsZero (restores n: UnboundedNaturalBase) : control
+    ensures
+      IsZero = (n = 0)
+
+end UnboundedNaturalBaseFacility

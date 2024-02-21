@@ -1,0 +1,41 @@
+realization IterativeBoundingBug
+  implements Multiply for IntegerFacility
+
+  uses IsPositive for IntegerFacility
+  uses Add for IntegerFacility
+  uses Negate for IntegerFacility
+
+  procedure Multiply (updates i: Integer,
+                      restores j: Integer)
+    variable p, nj, z: Integer
+    if IsGreater(j, z) then
+      loop
+        maintains p + i * j = #p + #i * #j and nj + j = #nj + #j and
+                  i = #i and
+                  z = #z and
+                  j >= 0
+        decreases j
+      while IsPositive(j) do
+        Add(p, i)
+        Increment(nj)
+        Decrement(j)
+      end loop
+    else
+      loop
+        maintains p - i * j = #p - #i * #j and nj + j = #nj + #j and
+                  i = #i and
+                  z = #z and
+                  j <= 0
+        decreases -j
+      while not AreEqual(j, z) do
+        Add(p, i)
+        Decrement(nj)
+        Increment(j)
+      end loop
+      Negate(p)
+    end if
+    i :=: p
+    j :=: nj
+  end Multiply
+
+end IterativeBoundingBug

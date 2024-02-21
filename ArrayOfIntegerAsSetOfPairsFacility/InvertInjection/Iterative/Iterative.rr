@@ -1,0 +1,32 @@
+realization Iterative
+  implements InvertInjection for ArrayOfIntegerAsSetOfPairsFacility
+
+  procedure InvertInjection (updates a: Array)
+    variable counter: Integer
+    variable hi: Integer
+    variable temp: Array
+    counter := LowerBound(a)
+    hi := UpperBound(a)
+    SetBounds(temp, counter, hi)
+    loop
+      maintains a = #a and
+                hi = #hi and
+                temp.lb = a.lb and
+                temp.ub = a.ub and
+                a.lb <= counter and
+                counter <= a.ub + 1 and
+                IS_INVERTED_UP_TO(counter, a, temp)
+      decreases a.ub - counter + 1
+    while (not IsGreater(counter, hi)) do
+      variable value: Integer
+      variable counterCopy: Integer
+      SwapItem(a, counter, value)
+      counterCopy := Replica(counter)
+      SwapItem(temp, value, counterCopy)
+      SwapItem(a, counter, value)
+      Increment(counter)
+    end loop
+    a :=: temp
+  end InvertInjection
+
+end Iterative

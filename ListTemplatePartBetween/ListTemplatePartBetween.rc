@@ -1,0 +1,64 @@
+contract ListTemplatePartBetween (type Item)
+  uses UnboundedIntegerFacility
+
+  definition SUBSTRING (s: string of Item,
+                        start: integer,
+                        finish: integer)
+    : string of Item
+    satisfies if (start < 0) or (start > finish) or (finish > |s|) then
+                SUBSTRING(s, start, finish) = empty_string
+              else
+                there exists a,
+                             b: string of Item
+                  (s = a * SUBSTRING(s, start, finish) * b and
+                  |a| = start and
+                  |b| = |s| - finish)
+
+  math subtype LIST_MODEL is (list: string of Item,
+                              pos: integer)
+    exemplar l
+    constraint l.pos >= 0 and l.pos <= |l.list|
+
+  type List is modeled by LIST_MODEL
+    exemplar l
+    initialization ensures l.list = empty_string and l.pos = 0
+
+  procedure Insert(updates s: List,
+                   clears x: Item)
+    ensures
+      s.list = SUBSTRING(#s.list, 0, s.pos) * <x> * SUBSTRING(#s.list, s.pos, |#s.list|) and
+      s.pos = #s.pos
+
+  procedure Remove(updates s: List,
+                   replaces x: Item)
+    requires
+      s.list /= empty_string and s.pos < |s.list|
+    ensures
+      s.list = SUBSTRING(#s.list, 0, s.pos) * SUBSTRING(#s.list, s.pos + 1, |#s.list|) and
+      <x> = SUBSTRING(#s.list, s.pos, s.pos + 1) and
+      s.pos = #s.pos
+
+  procedure Advance(updates s: List)
+    requires
+      s.pos < |s.list|
+    ensures
+      s.list = #s.list and
+      s.pos = #s.pos + 1
+
+  procedure Reset(updates s: List)
+    ensures
+      s.pos = 0 and s.list = #s.list
+
+  procedure AdvanceToEnd(updates s: List)
+    ensures
+      s.pos = |s.list| and s.list = #s.list
+
+  function LeftLength (restores s: List) : Integer
+    ensures
+      LeftLength = s.pos
+
+  function RightLength (restores s: List) : Integer
+    ensures
+      RightLength = |s.list| - s.pos
+
+end ListTemplatePartBetween

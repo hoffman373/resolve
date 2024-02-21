@@ -1,0 +1,11 @@
+contract Halve
+  enhances CircularListTemplate
+
+  procedure Halve(updates s: CircularList,
+                  replaces t: CircularList)
+    ensures
+      #s = t * s and
+      |s| <= |t| and
+      |t| <= |s| + 1
+
+end Halve

@@ -1,0 +1,11 @@
+contract ConvertToSequenceWithSubstring
+  enhances SetTemplate
+
+  uses SequenceWithSubstringTemplate
+
+  procedure ConvertToSequence(clears s: Set,
+                              replaces t: Sequence)
+    ensures
+      elements(t) = #s and |t| = |#s|
+
+end ConvertToSequenceWithSubstring

@@ -1,0 +1,10 @@
+contract Retreat
+  enhances ListTemplate
+
+  procedure Retreat(updates s: List)
+    requires
+      s.left /= empty_string
+    ensures
+      s.left * s.right = #s.left * #s.right and |s.left| = |#s.left| - 1
+
+end Retreat

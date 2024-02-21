@@ -1,0 +1,14 @@
+contract BooleanFacility
+  type Boolean is modeled by boolean
+    exemplar b
+    initialization ensures b = false
+
+  procedure Negate(updates b: Boolean)
+    ensures
+      b = (not #b)
+
+  function IsTrue (restores b: Boolean) : control
+    ensures
+      IsTrue = b
+
+end BooleanFacility

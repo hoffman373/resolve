@@ -1,0 +1,15 @@
+contract IsOdd
+  enhances NaturalFacility
+
+  definition IS_ODD (n: NATURALMODEL)
+    : boolean
+     is
+    there exists k: NATURALMODEL
+      (n = 2 * k + 1)
+
+  function IsOdd (restores n: Natural) : control
+    ensures
+      IsOdd = IS_ODD(n)
+      // IsOdd = there exists k: NATURALMODEL (n = 2 * k + 1)
+
+end IsOdd

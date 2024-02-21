@@ -1,0 +1,35 @@
+realization RecursiveBigMax
+  implements UnboundedHalve for UnboundedNaturalBaseFacility
+
+  uses HalveWithRemainder for NaturalFacility
+  uses Add for NaturalFacility
+
+  procedure Halve (updates n: UnboundedNaturalBase,
+                   replaces r: UnboundedNaturalBase)
+    decreases n
+    variable d, r2, r3, radix: Natural
+    Clear(r)
+    if not IsZero(n) then
+      radix := Radix(n)
+      DivideByRadix(n, d)
+      confirm ((0 < n) implies (n < (n * RADIX)))
+      Halve(n, r)
+      HalveWithRemainder(d, r2)
+      if not IsZero(r) then
+      //we had a carry from the recursive call
+        Clear(r)
+        //add half a radix
+        HalveWithRemainder(radix, r3)
+        confirm (2 * d <= MAX) and (2 * radix <= MAX)
+        Add(d, radix)
+        //add the two remainders and divide them by two
+        Add(r3, r2)
+        HalveWithRemainder(r3, r2)
+        Add(d, r3)
+      end if
+      MultiplyByRadix(n, d)
+      MultiplyByRadix(r, r2)
+    end if
+  end Halve
+
+end RecursiveBigMax

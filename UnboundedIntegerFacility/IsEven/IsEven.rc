@@ -1,0 +1,9 @@
+contract IsEven
+  enhances UnboundedIntegerFacility
+
+  function IsEven (restores i: Integer) : control
+    ensures
+      IsEven = there exists k: integer
+        (i = k + k)
+
+end IsEven

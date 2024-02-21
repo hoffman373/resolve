@@ -1,0 +1,13 @@
+realization Obvious
+  implements Get for ArrayOfUnboundedIntegerAsStringFacility
+
+  procedure Get (restores a: ArrayOfInteger,
+                 restores i: Integer,
+                 replaces value: Integer)
+    variable theVal: Integer
+    SwapItem(a, i, theVal)
+    value := Replica(theVal)
+    SwapItem(a, i, theVal)
+  end Get
+
+end Obvious

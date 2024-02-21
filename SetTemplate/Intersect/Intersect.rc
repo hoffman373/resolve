@@ -1,0 +1,9 @@
+contract Intersect
+  enhances SetTemplate
+
+  procedure Intersect(updates s: Set,
+                      restores t: Set)
+    ensures
+      s = #s intersection t
+
+end Intersect

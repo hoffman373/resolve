@@ -1,0 +1,11 @@
+contract Subtract
+  enhances NaturalFacility
+
+  procedure Subtract(updates i: Natural,
+                     restores j: Natural)
+    requires
+      0 <= i - j//  and  i - j <= MAX
+    ensures
+      i = #i - j
+
+end Subtract

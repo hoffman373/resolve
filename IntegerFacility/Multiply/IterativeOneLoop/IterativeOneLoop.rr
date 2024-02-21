@@ -1,0 +1,35 @@
+realization IterativeOneLoop
+  implements Multiply for IntegerFacility
+
+  uses IsPositive for IntegerFacility
+  uses Add for IntegerFacility
+  uses Subtract for IntegerFacility
+
+  procedure Multiply (updates i: Integer,
+                      restores j: Integer)
+    variable p, nj, z: Integer
+    loop
+      maintains p + i * j = #p + #i * #j and nj + j = #nj + #j and
+                i = #i and
+                z = #z and
+                (if #j > 0 then
+                   j >= 0
+                 else
+                   j <= 0)
+      decreases |j|
+    while not AreEqual(j, z) do
+      if IsGreater(j, z) then
+        Add(p, i)
+        Increment(nj)
+        Decrement(j)
+      else
+        Subtract(p, i)
+        Decrement(nj)
+        Increment(j)
+      end if
+    end loop
+    i :=: p
+    j :=: nj
+  end Multiply
+
+end IterativeOneLoop

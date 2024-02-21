@@ -1,0 +1,90 @@
+contract UninitializedArrayTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  definition IS_PARTIAL_FUNCTION (m: finite set of (i: integer,
+                                                    x: Item))
+    : boolean
+     is
+    for all i1,
+            i2: integer,
+            x1,
+            x2: Item
+        where ((i1, x1) is in m and (i2, x2) is in m)
+      (if i1 = i2 then
+        x1 = x2)
+
+  definition IS_VALID_ARRAY (lb: integer,
+                             ub: integer,
+                             initialized: finite set of integer,
+                             table: finite set of (i: integer,
+                                                   x: Item))
+    : boolean
+     is
+    IS_PARTIAL_FUNCTION(table) and
+    for all i: integer
+        where (i is in initialized)
+      (lb <= i and i <= ub and
+      there exists x: Item
+        ((i, x) is in table)) and
+    for all i: integer,
+            x: Item
+        where ((i, x) is in table)
+      (i is in initialized)
+
+  math subtype ARRAY_MODEL is (lb: integer,
+                               ub: integer,
+                               initialized: finite set of integer,
+                               table: finite set of (i: integer,
+                                                     x: Item))
+    exemplar a
+    constraint IS_VALID_ARRAY(a.lb, a.ub, a.initialized, a.table)
+
+  type Array is modeled by ARRAY_MODEL
+    exemplar a
+    initialization ensures a = (1, 0, empty_set, empty_set)
+
+  procedure SetBounds(updates a: Array,
+                      restores lb: Integer,
+                      restores ub: Integer)
+    ensures
+      a.lb = lb and
+      a.ub = ub and
+      a.initialized = empty_set
+
+  procedure Set(updates a: Array,
+                restores i: Integer,
+                clears x: Item)
+    // should this be redesigned so initialized values can be "re-set"?
+    requires
+      a.lb <= i and i <= a.ub and not i is in a.initialized
+    ensures
+      a.table = #a.table union {(i, x)}
+
+  function IsInitializedAt (restores a: Array,
+                            restores i: Integer) : control
+    ensures
+      IsInitializedAt = (i is in a.initialized)
+
+  procedure SwapItem(updates a: Array,
+                     restores i: Integer,
+                     updates x: Item)
+    requires
+      i is in a.initialized
+    ensures
+      i is in a.initialized and
+      (i, x) is in #a.table and
+      (i, #x) is in a.table and
+      for all j: integer,
+              y: Item
+          where (j /= i)
+        ((j, y) is in a.table iff (j, y) is in a.table)
+
+  function LowerBound (restores a: Array) : Integer
+    ensures
+      LowerBound = a.lb
+
+  function UpperBound (restores a: Array) : Integer
+    ensures
+      UpperBound = a.ub
+
+end UninitializedArrayTemplate

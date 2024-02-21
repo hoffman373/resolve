@@ -1,0 +1,9 @@
+contract SwapPartitions
+  enhances PartitionedSetOfIntegersFacility
+
+  procedure SwapPartitions(updates p: PartitionedSetOfIntegers)
+    ensures
+      p.others = #p.interesting and
+      p.interesting = #p.others
+
+end SwapPartitions

@@ -1,0 +1,47 @@
+realization IterativeRealization
+  implements Remainder for IntegerFacility
+
+  uses Add for IntegerFacility
+  uses Subtract for IntegerFacility
+
+  procedure Remainder (updates i: Integer,
+                       restores j: Integer)
+    variable z: Integer
+    if IsGreater(i, z) then
+      if IsGreater(j, z) then
+        loop
+          maintains i mod j = #i mod #j and j = #j and i >= 0
+          decreases i
+        while IsGreater(i, j) or AreEqual(i, j) do
+          Subtract(i, j)
+        end loop
+      else
+        loop
+          maintains i mod j = #i mod #j and j = #j and i >= 0
+          decreases i
+        while IsGreater(i, j) or AreEqual(i, j) do
+        //that are equal is wrong, they have opposite signs, might want to do the Abs method!
+          Add(i, j)
+        end loop
+      end if
+    else
+      if IsGreater(j, z) then
+        loop
+          maintains i mod j = #i mod #j and j = #j and i <= 0
+          decreases |i|
+        while IsGreater(i, j) or AreEqual(i, j) do
+        //that are equal is wrong, they have opposite signs, might want to do the Abs method!
+          Add(i, j)
+        end loop
+      else
+        loop
+          maintains i mod j = #i mod #j and j = #j and i <= 0
+          decreases |i|
+        while IsGreater(i, j) or AreEqual(i, j) do
+          Subtract(i, j)
+        end loop
+      end if
+    end if
+  end Remainder
+
+end IterativeRealization

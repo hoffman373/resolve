@@ -1,0 +1,71 @@
+contract PartitionedSetOfIntegersFacility
+  uses UnboundedIntegerFacility
+
+  definition INTERVAL (lo: integer,
+                       hi: integer)
+    : finite set of integer
+    satisfies for all i: integer
+                (i is in INTERVAL(lo, hi) iff (lo <= i and i <= hi))
+
+  math subtype PAR_SET_MODEL is (interesting: finite set of integer,
+                                 others: finite set of integer)
+    exemplar p
+    constraint p.interesting intersection p.others = empty_set and
+               there exists lo,
+                            hi: integer
+                 (p.interesting union p.others = INTERVAL(lo, hi))
+
+  type PartitionedSetOfIntegers is modeled by PAR_SET_MODEL
+    exemplar p
+    initialization ensures p.interesting = empty_set and
+                           p.others = empty_set
+
+  procedure SetDomain(replaces p: PartitionedSetOfIntegers,
+                      restores lo: Integer,
+                      restores hi: Integer)
+    ensures
+      p.interesting = empty_set and
+      p.others = INTERVAL(lo, hi)
+
+  procedure GetDomain(restores p: PartitionedSetOfIntegers,
+                      replaces lo: Integer,
+                      replaces hi: Integer)
+    ensures
+      if (p.interesting union p.others = empty_set) then
+        lo = 1 and hi = 0
+      else
+        p.interesting union p.others = INTERVAL(lo, hi)
+
+  procedure MakeInteresting(updates p: PartitionedSetOfIntegers,
+                            restores i: Integer)
+    requires
+      i is in p.others
+    ensures
+      i is in p.interesting and
+      p.interesting union p.others = #p.interesting union #p.others
+
+  procedure MakeOther(updates p: PartitionedSetOfIntegers,
+                      restores i: Integer)
+    requires
+      i is in p.interesting
+    ensures
+      i is in p.others and
+      p.interesting union p.others = #p.interesting union #p.others
+
+  procedure FindAnyInterestingValue(restores p: PartitionedSetOfIntegers,
+                                    replaces i: Integer)
+    requires
+      |p.interesting| > 0
+    ensures
+      i is in p.interesting
+
+  function IsInteresting (restores p: PartitionedSetOfIntegers,
+                          restores i: Integer) : control
+    ensures
+      IsInteresting = (i is in p.interesting)
+
+  function InterestingSize (restores p: PartitionedSetOfIntegers) : Integer
+    ensures
+      InterestingSize = |p.interesting|
+
+end PartitionedSetOfIntegersFacility

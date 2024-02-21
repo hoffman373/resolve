@@ -1,0 +1,8 @@
+contract Reverse
+  enhances StackTemplate
+
+  procedure Reverse(updates s: Stack)
+    ensures
+      s = reverse(#s)
+
+end Reverse

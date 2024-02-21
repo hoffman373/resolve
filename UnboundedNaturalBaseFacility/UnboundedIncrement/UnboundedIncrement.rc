@@ -1,0 +1,8 @@
+contract UnboundedIncrement
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Increment(updates n: UnboundedNaturalBase)
+    ensures
+      n = #n + 1
+
+end UnboundedIncrement

@@ -1,0 +1,73 @@
+realization StackRealization (function GetRadix () : Natural
+                                ensures
+                                  GetRadix = RADIX)
+  implements UnboundedNaturalBaseFacility
+
+  uses StackOfNaturalFacility
+
+  definition HAS_ONLY_DIGITS (digits: string of integer,
+                              radix: integer)
+    : boolean
+     is
+    for all d: integer,
+            r: string of integer
+        where (digits = <d> * r)
+      (0 <= d and d < radix and HAS_ONLY_DIGITS(r, radix))
+
+  definition IS_WELL_FORMED_FUNCTION (digits: string of integer,
+                                      radix: integer)
+    : boolean
+     is
+    for all d: integer,
+            r: string of integer
+        where (digits = <d> * r)
+      (0 < d and d < radix and HAS_ONLY_DIGITS(r, radix))
+
+  definition NUMERICAL_VALUE (s: string of integer,
+                              r: integer)
+    : integer
+    satisfies if (s = empty_string) then
+                NUMERICAL_VALUE(s, r) = 0
+              else
+                for all k: string of integer,
+                        d: integer
+                    where (s = k * <d>)
+                  (NUMERICAL_VALUE(s, r) =
+                  NUMERICAL_VALUE(k, r) * r + d)
+
+
+  type representation for UnboundedNaturalBase is (digits: Stack, radix: Natural)
+    exemplar n
+    convention n.radix = RADIX and
+               IS_WELL_FORMED_FUNCTION(reverse(n.digits), n.radix)
+    correspondence function NUMERICAL_VALUE(reverse(n.digits), n.radix)
+    initialization
+      n.radix := GetRadix()
+  end UnboundedNaturalBase
+
+  procedure MultiplyByRadix (updates n: UnboundedNaturalBase,
+                             clears k: Natural)
+    variable z: Natural
+    if not (AreEqual(k, z) and IsEmpty(n.digits)) then
+      Push(n.digits, k)
+    end if
+  end MultiplyByRadix
+
+  procedure DivideByRadix (updates n: UnboundedNaturalBase,
+                           replaces k: Natural)
+    if not IsEmpty(n.digits) then
+      Pop(n.digits, k)
+    else
+      Clear(k)
+    end if
+  end DivideByRadix
+
+  function Radix (restores n: UnboundedNaturalBase) : Natural
+    Radix := Replica(n.radix)
+  end Radix
+
+  function IsZero (restores n: UnboundedNaturalBase) : control
+    IsZero := IsEmpty(n.digits)
+  end IsZero
+
+end StackRealization

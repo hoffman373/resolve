@@ -1,0 +1,11 @@
+contract Mod
+  enhances IntegerFacility
+
+  procedure Mod(updates i: Integer,
+                restores j: Integer)
+    requires
+      j > 0
+    ensures
+      i = #i mod j
+
+end Mod

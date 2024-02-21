@@ -1,0 +1,9 @@
+contract Unite
+  enhances SetTemplate
+
+  procedure Unite(updates s: Set,
+                  clears t: Set)
+    ensures
+      s = #s union #t
+
+end Unite

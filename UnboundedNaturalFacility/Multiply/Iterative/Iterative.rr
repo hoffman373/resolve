@@ -1,0 +1,24 @@
+realization Iterative
+  implements Multiply for UnboundedNaturalFacility
+
+  uses IsPositive for UnboundedNaturalFacility
+  uses Add for UnboundedNaturalFacility
+
+  procedure Multiply (updates n: Natural,
+                      restores m: Natural)
+    variable p, k: Natural
+    loop
+      maintains p + n * m = #p + #n * #m and
+                k + m = #k + #m and
+                n = #n
+      decreases m
+    while IsPositive(m) do
+      Add(p, n)
+      Increment(k)
+      Decrement(m)
+    end loop
+    n :=: p
+    m :=: k
+  end Multiply
+
+end Iterative

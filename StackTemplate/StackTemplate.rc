@@ -1,0 +1,30 @@
+contract StackTemplate (type Item)
+  uses UnboundedIntegerFacility
+
+  math subtype STACK_MODEL is string of Item
+
+  type Stack is modeled by STACK_MODEL
+    exemplar s
+    initialization ensures s = empty_string
+
+  procedure Push(updates s: Stack,
+                 clears x: Item)
+    ensures
+      s = <#x> * #s
+
+  procedure Pop(updates s: Stack,
+                replaces x: Item)
+    requires
+      s /= empty_string
+    ensures
+      #s = <x> * s
+
+  function IsEmpty (restores s: Stack) : control
+    ensures
+      IsEmpty = (s = empty_string)
+
+  function Length (restores s: Stack) : Integer
+    ensures
+      Length = |s|
+
+end StackTemplate

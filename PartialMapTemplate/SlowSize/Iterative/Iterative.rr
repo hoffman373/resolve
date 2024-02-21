@@ -1,0 +1,21 @@
+realization Iterative
+  implements SlowSize for PartialMapTemplate
+
+  function SlowSize (restores m: PartialMap) : Integer
+    variable tmp: PartialMap
+    loop
+      maintains m union tmp = #m union #tmp and
+                m intersection tmp = {} and
+                SlowSize = |tmp|
+      decreases |m|
+    while not IsEmpty(m) do
+      variable d: DItem
+      variable r: RItem
+      UndefineAny(m, d, r)
+      Increment(SlowSize)
+      Define(tmp, d, r)
+    end loop
+    m :=: tmp
+  end SlowSize
+
+end Iterative

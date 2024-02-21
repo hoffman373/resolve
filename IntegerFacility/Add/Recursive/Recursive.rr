@@ -1,0 +1,23 @@
+realization Recursive
+  implements Add for IntegerFacility
+
+  procedure Add (updates i: Integer,
+                 restores j: Integer)
+    decreases |j|
+    variable z: Integer
+    if IsGreater(j, z) then
+      Increment(i)
+      Decrement(j)
+      Add(i, j)
+      Increment(j)
+    else
+      if IsGreater(z, j) then
+        Decrement(i)
+        Increment(j)
+        Add(i, j)
+        Decrement(j)
+      end if
+    end if
+  end Add
+
+end Recursive

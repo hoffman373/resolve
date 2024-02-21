@@ -1,0 +1,17 @@
+realization Recursive
+  implements UnboundedIncrement for UnboundedNaturalBaseFacility
+
+  procedure Increment (updates n: UnboundedNaturalBase)
+    decreases n
+    variable d, radix: Natural
+    radix := Radix(n)
+    DivideByRadix(n, d)
+    Increment(d)
+    if AreEqual(d, radix) then
+      Clear(d)
+      Increment(n)
+    end if
+    MultiplyByRadix(n, d)
+  end Increment
+
+end Recursive

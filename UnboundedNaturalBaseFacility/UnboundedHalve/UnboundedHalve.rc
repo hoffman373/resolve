@@ -1,0 +1,9 @@
+contract UnboundedHalve
+  enhances UnboundedNaturalBaseFacility
+
+  procedure Halve(updates n: UnboundedNaturalBase,
+                  replaces r: UnboundedNaturalBase)
+    ensures
+      #n = 2 * n + r and 0 <= r and r < 2
+
+end UnboundedHalve

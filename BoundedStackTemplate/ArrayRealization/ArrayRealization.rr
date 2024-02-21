@@ -1,0 +1,58 @@
+realization ArrayRealization (function MaxDepth () : Integer
+                                ensures
+                                  MaxDepth = MAX_DEPTH)
+  implements BoundedStackTemplate
+
+  uses ArrayAsStringTemplate
+
+  facility ArrayFacility is ArrayAsStringTemplate(Item)
+
+  type representation for Stack is (data: Array, length: Integer)
+    exemplar s
+    convention s.data.ub = MAX_DEPTH - 1 and
+               s.data.lb = 0 and
+               // |s| = s.length  and
+               0 <= s.length and
+               s.length <= MAX_DEPTH
+    correspondence function reverse(substring(s.data.s, 0, s.length))
+    initialization
+      variable max, zero: Integer
+      max := MaxDepth()
+      Decrement(max)
+      SetBounds(s.data, zero, max)
+  end Stack
+
+  procedure Push (updates s: Stack,
+                  clears x: Item)
+    variable len: Integer
+    len := Replica(s.length)
+    SwapItem(s.data, len, x)
+    Clear(x)
+    Increment(s.length)
+  end Push
+
+  procedure Pop (updates s: Stack,
+                 replaces x: Item)
+    variable len: Integer
+    Decrement(s.length)
+    len := Replica(s.length)
+    SwapItem(s.data, len, x)
+  end Pop
+
+  function IsEmpty (restores s: Stack) : control
+    variable zero: Integer
+    IsEmpty := AreEqual(s.length, zero)
+  end IsEmpty
+
+  function IsFull (restores s: Stack) : control
+    variable nomore: Integer
+    nomore := UpperBound(s.data)
+    Increment(nomore)
+    IsFull := AreEqual(s.length, nomore)
+  end IsFull
+
+  function Length (restores s: Stack) : Integer
+    Length := Replica(s.length)
+  end Length
+
+end ArrayRealization

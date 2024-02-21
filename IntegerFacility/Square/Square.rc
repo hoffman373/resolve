@@ -1,0 +1,10 @@
+contract Square
+  enhances IntegerFacility
+
+  procedure Square(updates i: Integer)
+    requires
+      i * i <= MAX
+    ensures
+      i = #i * #i
+
+end Square

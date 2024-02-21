@@ -1,0 +1,8 @@
+contract Square
+  enhances UnboundedIntegerFacility
+
+  procedure Square(updates i: Integer)
+    ensures
+      i = #i * #i
+
+end Square

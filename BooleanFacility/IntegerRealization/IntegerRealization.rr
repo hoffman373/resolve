@@ -1,0 +1,26 @@
+realization IntegerRealization
+  implements BooleanFacility
+
+  uses IntegerFacility
+
+  type representation for Boolean is (int: Integer)
+    exemplar b
+    convention b.int = 0 or b.int = 1
+    correspondence function (b.int = 1)
+  end Boolean
+
+  procedure Negate (updates b: Boolean)
+    variable zero: Integer
+    if AreEqual(b.int, zero) then
+      Increment(zero)
+    end if
+    b.int := Replica(zero)
+  end Negate
+
+  function IsTrue (restores b: Boolean) : control
+    variable other: Integer
+    Increment(other)
+    IsTrue := AreEqual(b.int, other)
+  end IsTrue
+
+end IntegerRealization

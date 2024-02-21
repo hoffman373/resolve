@@ -1,0 +1,10 @@
+contract Retreat
+  enhances ListTemplatePartBetween
+
+  procedure Retreat(updates s: List)
+    requires
+      s.pos > 0
+    ensures
+      s.list = #s.list and s.pos = #s.pos - 1
+
+end Retreat

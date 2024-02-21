@@ -1,0 +1,22 @@
+contract InvertInjection
+  enhances ArrayOfUnboundedIntegerAsStringFacility
+
+  definition INTERVAL (lo: integer,
+                       hi: integer)
+    : finite set of integer
+    satisfies for all i: integer
+                (i is in INTERVAL(lo, hi) iff (lo <= i and i <= hi))
+
+  procedure InvertInjection(updates a: ArrayOfInteger)
+    requires
+      INTERVAL(a.lb, a.ub) = elements(a.s)
+    ensures
+      a.lb = #a.lb and
+      a.ub = #a.ub and
+      for all p,
+              q: string of integer,
+              x: integer
+          where (#a.s = p * <x> * q)
+        (substring(a.s, x - a.lb, x - a.lb + 1) = <a.lb + |p|>)
+
+end InvertInjection

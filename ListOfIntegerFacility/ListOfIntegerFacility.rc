@@ -1,0 +1,59 @@
+contract ListOfIntegerFacility
+  uses UnboundedIntegerFacility
+
+  math subtype LIST_MODEL is (left: string of integer,
+                              right: string of integer)
+
+  type List is modeled by LIST_MODEL
+    exemplar l
+    initialization ensures l.left = empty_string and l.right = empty_string
+
+  procedure Insert(updates s: List,
+                   clears x: Integer)
+    ensures
+      s.left = #s.left and
+      s.right = <#x> * #s.right
+
+  procedure Remove(updates s: List,
+                   replaces x: Integer)
+    requires
+      s.right /= empty_string
+    ensures
+      s.left = #s.left and
+      #s.right = <x> * s.right
+
+  procedure Advance(updates s: List)
+    requires
+      s.right /= empty_string
+    ensures
+      s.left * s.right = #s.left * #s.right and
+      |s.right| = |#s.right| - 1 and
+      |s.left| = |#s.left| + 1
+
+  procedure Reset(updates s: List)
+    ensures
+      |s.left| = 0 and
+      s.right = #s.left * #s.right
+
+  procedure AdvanceToEnd(updates s: List)
+    ensures
+      |s.right| = 0 and
+      s.left = #s.left * #s.right
+
+  function LeftIsEmpty (restores s: List) : control
+    ensures
+      LeftIsEmpty = (|s.left| = 0)
+
+  function RightIsEmpty (restores s: List) : control
+    ensures
+      RightIsEmpty = (|s.right| = 0)
+
+  function LeftLength (restores s: List) : Integer
+    ensures
+      LeftLength = |s.left|
+
+  function RightLength (restores s: List) : Integer
+    ensures
+      RightLength = |s.right|
+
+end ListOfIntegerFacility

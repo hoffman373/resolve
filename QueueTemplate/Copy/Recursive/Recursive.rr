@@ -1,0 +1,29 @@
+realization Recursive (procedure CopyTo(restores x: Item,
+                                        replaces xCopy: Item)
+                         ensures
+                           x = xCopy)
+  implements Copy for QueueTemplate
+
+  uses Concatenate for QueueTemplate
+
+  procedure Copy (restores p: Queue,
+                  replaces q: Queue)
+    decreases |p|
+    if not IsEmpty(p) then
+      variable x, xCopy: Item
+      variable pTmp, qTmp: Queue
+      Dequeue(p, x)
+      CopyTo(x, xCopy)
+      Copy(p, q)
+      Enqueue(pTmp, x)
+      Enqueue(qTmp, xCopy)
+      Concatenate(pTmp, p)
+      Concatenate(qTmp, q)
+      q :=: qTmp
+      p :=: pTmp
+    else
+      Clear(q)
+    end if
+  end Copy
+
+end Recursive

@@ -1,0 +1,21 @@
+realization ObviousRealization (function Function (restores i: DItem) : control
+                                  ensures
+                                    Function = F(i))
+  implements MemoizingConditionMachineTemplate
+
+  uses BooleanFacility
+
+  type representation for MemoizingConditionMachine is (temp: Boolean)
+    exemplar m
+    convention true
+    correspondence function m.temp
+    initialization
+      Negate(m.temp)
+  end MemoizingConditionMachine
+
+  function Compute (restores m: MemoizingConditionMachine,
+                    restores d: DItem) : control
+    Compute := Function(d)
+  end Compute
+
+end ObviousRealization

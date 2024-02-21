@@ -1,0 +1,17 @@
+realization Recursive
+  implements Reverse for JahobListTemplate
+
+  procedure Reverse (updates s: List)
+    decreases |s.remaining|
+    variable zero, len: Integer
+    len := RemainingLength(s)
+    if not AreEqual(len, zero) then
+      variable x: Item
+      Remove(s, x)
+      Reverse(s)
+      Insert(s, x)
+      Advance(s)
+    end if
+  end Reverse
+
+end Recursive

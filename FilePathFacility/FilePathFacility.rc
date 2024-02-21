@@ -1,0 +1,80 @@
+contract FilePathFacility
+  uses TextFacility
+  uses BooleanFacility
+
+  math subtype PATH is string of string of character
+    exemplar fp
+    constraint for all i: integer
+                   where (0 <= i and i < |fp|)
+                 (substring(fp, i, 1) /= empty_string)
+
+  //constraint |fp| > 0 and substring(fp, 0, 1) = empty_string
+  /*
+  Determines if a path is root.
+  */
+  definition IS_ROOT (path: FilePath)
+    : boolean
+     is
+    path = empty_string
+
+  definition PARENT (path: FilePath)
+    : FilePath
+    satisfies if |path| = 0 then
+                PARENT(path) = empty_string
+              else
+                PARENT(path) = substring(path, 0, |path| - 1)
+
+  /*
+  The FilePath is a string of Texts and a flag indicating whether or not the
+  FilePath is a file.
+  */
+  type FilePath is modeled by PATH
+    exemplar t
+    initialization ensures t = empty_string
+
+  /*
+  Determines if two FilePaths are equal.
+  */
+  function AreEqual (restores t1: FilePath,
+                     restores t2: FilePath) : control
+    ensures
+      AreEqual = (t1 = t2)
+
+  /*
+  Root folder predicate.
+  */
+  function IsRoot (restores path: FilePath) : Boolean
+    ensures
+      IsRoot = IS_ROOT(path)
+
+  /*
+  Adds a folder to the path.
+  */
+  //  procedure AddFolder(updates path: FilePath,
+  //                      restores folder: Text)
+  //    requires
+  //      path.isFile = false
+  //    ensures
+  //      path = (#path.path * <folder>, true)
+  /*
+  Adds a file to the path.
+  */
+  //  procedure AddFile(updates path: FilePath,
+  //                    restores name: Text)
+  //    requires
+  //      path.isFile = true
+  //    ensures
+  //      path = (#path.path * <name>, false)
+  /*
+  Gets the parent of a FilePath.
+  If path is the root folder, the root folder is returned
+  Can functions be referenced in specifications?
+  */
+  function GetParent (restores path: FilePath) : FilePath
+    ensures
+      /*if   |path| = 0 then
+      GetParent = path
+      else*/
+      GetParent = PARENT(path)
+
+end FilePathFacility

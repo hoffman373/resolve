@@ -1,0 +1,8 @@
+contract Reverse
+  enhances SequenceWithSubstringTemplate
+
+  procedure Reverse(updates s: Sequence)
+    ensures
+      s = reverse(#s)
+
+end Reverse

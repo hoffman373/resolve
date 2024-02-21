@@ -1,0 +1,91 @@
+contract SortingMachineTemplate (type Item,
+                                 definition ARE_IN_ORDER1 (x: Item,
+                                                           y: Item)
+                                   : boolean
+                                   satisfies for all z: Item
+                                               ((ARE_IN_ORDER1(x, y) or ARE_IN_ORDER1(y, x)) and
+                                               (if (ARE_IN_ORDER1(x, y) and ARE_IN_ORDER1(y, z)) then
+                                                  ARE_IN_ORDER1(x, z))))
+  uses UnboundedIntegerFacility
+
+  definition OCCURS_COUNT1 (s: string of Item,
+                            i: Item)
+    : integer
+    satisfies if s = empty_string then
+                OCCURS_COUNT1(s, i) = 0
+              else
+                there exists x: Item,
+                             r: string of Item
+                  ((s = <x> * r) and
+                  (if x = i then
+                     OCCURS_COUNT1(s, i) = OCCURS_COUNT1(r, i) + 1
+                   else
+                     OCCURS_COUNT1(s, i) = OCCURS_COUNT1(r, i)))
+
+  definition IS_PERMUTATION1 (s1: string of Item,
+                              s2: string of Item)
+    : boolean
+     is
+    for all i: Item
+      (OCCURS_COUNT1(s1, i) = OCCURS_COUNT1(s2, i))
+
+  definition IS_PRECEDING1 (s1: string of Item,
+                            s2: string of Item)
+    : boolean
+     is
+    for all i,
+            j: Item
+        where (OCCURS_COUNT1(s1, i) > 0 and
+              OCCURS_COUNT1(s2, j) > 0)
+      (ARE_IN_ORDER1(i, j))
+
+  math subtype SORTING_MACHINE_MODEL is (items: string of Item,
+                                         inserting: boolean)
+
+  type SortingMachine is modeled by SORTING_MACHINE_MODEL
+    exemplar s
+    initialization ensures s = (empty_string, true)
+
+  procedure Add(updates s: SortingMachine,
+                clears x: Item)
+    requires
+      s.inserting
+    ensures
+      s = (#s.items * <#x>, true)
+
+  procedure RemoveASmallest(updates s: SortingMachine,
+                            replaces x: Item)
+    requires
+      not s.inserting and s.items /= empty_string
+    ensures
+      IS_PERMUTATION1(#s.items, s.items * <x>) and IS_PRECEDING1(<x>, s.items) and
+      s.inserting = false
+
+  procedure RemoveAny(updates s: SortingMachine,
+                      replaces x: Item)
+    requires
+      s.items /= empty_string
+    ensures
+      IS_PERMUTATION1(#s.items, s.items * <x>) and
+      s.inserting = #s.inserting
+
+  procedure SwitchToExtractionPhase(updates s: SortingMachine)
+    requires
+      s.inserting
+    ensures
+      IS_PERMUTATION1(#s.items, s.items) and
+      s.inserting = false
+
+  function Length (restores s: SortingMachine) : Integer
+    ensures
+      Length = |s.items|
+
+  function IsEmpty (restores s: SortingMachine) : control
+    ensures
+      IsEmpty = (s.items = empty_string)
+
+  function IsInInsertingPhase (restores s: SortingMachine) : control
+    ensures
+      IsInInsertingPhase = s.inserting
+
+end SortingMachineTemplate

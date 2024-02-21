@@ -1,0 +1,26 @@
+realization Recursive
+  implements Multiply for UnboundedNaturalFacility
+
+  uses Add for UnboundedNaturalFacility
+
+  procedure Multiply (updates n: Natural,
+                      restores m: Natural)
+    decreases m
+    variable zero: Natural
+    if AreEqual(m, zero) then
+      Clear(n)
+    else
+      variable one: Natural
+      Increment(one)
+      if IsGreater(m, one) then
+        variable nCopy: Natural
+        nCopy := Replica(n)
+        Decrement(m)
+        Multiply(n, m)
+        Increment(m)
+        Add(n, nCopy)
+      end if
+    end if
+  end Multiply
+
+end Recursive
